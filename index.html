@@ -926,7 +926,7 @@
             </div>
             <div class="field-group">
               <label for="birthDateInput">วันเดือนปีเกิด</label>
-              <input id="birthDateInput" type="text" inputmode="numeric" placeholder="เช่น 12/08/2535 หรือ 12/08/1992">
+              <input id="birthDateInput" type="text" inputmode="numeric" placeholder="เช่น 04062528 หรือ 04/06/2528">
             </div>
           </div>
           <p class="privacy-note"><strong>ข้อมูลนี้จะไม่อยู่ในระบบ ไม่มีการเก็บบันทึกใดๆ</strong> ใช้เฉพาะบนหน้านี้เพื่อสร้างคำทำนายครั้งปัจจุบันเท่านั้น</p>
@@ -1590,12 +1590,22 @@
       document.querySelector("#resetBtn").addEventListener("click", () => resetReading(true));
     }
 
-    function parseBirthDate(value) {
+    function normalizeBirthDateInput(value) {
       const raw = value.trim();
-      if (!raw) return null;
-      const parts = raw.replace(/[.\-\s]+/g, "/").split("/").map((part) => Number(part));
+      if (!raw) return "";
+      const digits = raw.replace(/\D/g, "");
+      if (/^\d{8}$/.test(digits)) {
+        return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+      }
+      return raw.replace(/[.\-\s]+/g, "/");
+    }
+
+    function parseBirthDate(value) {
+      const normalized = normalizeBirthDateInput(value);
+      if (!normalized) return null;
+      const parts = normalized.split("/").map((part) => Number(part));
       if (parts.length !== 3 || parts.some((part) => !Number.isFinite(part))) {
-        return { error: "กรุณาใส่วันเกิดเป็นรูปแบบ วัน/เดือน/ปี เช่น 12/08/2535" };
+        return { error: "กรุณาใส่วันเกิดเป็นตัวเลข 8 หลัก เช่น 04062528 หรือรูปแบบ วัน/เดือน/ปี เช่น 04/06/2528" };
       }
       let [day, month, year] = parts;
       const displayYear = year;
@@ -1604,7 +1614,7 @@
       if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
         return { error: "วันเดือนปีเกิดไม่ถูกต้อง กรุณาตรวจอีกครั้ง" };
       }
-      return { date, day, month, year, displayYear };
+      return { date, day, month, year, displayYear, normalized };
     }
 
     function getThaiAstroProfile(birthText) {
@@ -1638,7 +1648,7 @@
 
     function renderPrivacySummary(fullName, birthText) {
       const name = fullName ? `ผู้ถาม: ${escapeHtml(fullName)}` : "ยังไม่ได้ระบุชื่อผู้ถาม";
-      const birth = birthText ? `วันเดือนปีเกิดที่ใช้ประกอบ: ${escapeHtml(birthText)}` : "ยังไม่ได้ระบุวันเดือนปีเกิด";
+      const birth = birthText ? `วันเดือนปีเกิดที่ใช้ประกอบ: ${escapeHtml(normalizeBirthDateInput(birthText) || birthText)}` : "ยังไม่ได้ระบุวันเดือนปีเกิด";
       return `<div class="summary-block"><h3>ข้อมูลผู้ถาม</h3><p>${name}</p><p>${birth}</p><p><strong>ข้อมูลนี้จะไม่อยู่ในระบบ ไม่มีการเก็บบันทึกใดๆ</strong> การอ่านนี้ประมวลผลบนหน้าเว็บขณะใช้งานเท่านั้น</p></div>`;
     }
 
