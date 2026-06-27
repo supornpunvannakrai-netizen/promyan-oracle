@@ -716,6 +716,33 @@
       font-size: 0.78rem;
     }
 
+    .tone-badge {
+      width: fit-content;
+      margin: 0 auto;
+      padding: 3px 10px;
+      border: 1px solid rgba(248, 218, 138, 0.34);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .tone-badge.supportive {
+      color: #142014;
+      background: linear-gradient(135deg, #d8f4c6, #90c979);
+    }
+
+    .tone-badge.mixed {
+      color: #241506;
+      background: linear-gradient(135deg, #ffe29a, #d6a447);
+    }
+
+    .tone-badge.caution {
+      color: #fff3dd;
+      background: linear-gradient(135deg, #74324a, #2a1224);
+      border-color: rgba(255, 178, 142, 0.5);
+    }
+
     .card-name {
       margin: 0;
       color: var(--gold-bright);
@@ -1101,6 +1128,63 @@
       }
     };
     const spreadLabels = ["อดีต", "ปัจจุบัน", "แนวโน้ม"];
+    const toneProfiles = {
+      supportive: {
+        label: "น้ำหนักส่งเสริม",
+        title: "น้ำหนักคำทำนาย: ส่งเสริม",
+        summary: "พลังของไพ่เอนไปทางเปิดโอกาส สนับสนุน หรือช่วยให้เรื่องที่ถามเดินหน้าได้ง่ายขึ้น แต่ยังต้องลงมืออย่างมีสติ",
+        decision: "เดินหน้าได้ หากเงื่อนไขจริงพร้อมและคุณรับผิดชอบผลลัพธ์ได้",
+        caution: "ระวังความมั่นใจเกินไปหรือมองข้ามรายละเอียดเล็ก ๆ ที่อาจกลายเป็นปัญหา"
+      },
+      mixed: {
+        label: "น้ำหนักกลาง",
+        title: "น้ำหนักคำทำนาย: กลาง",
+        summary: "พลังของไพ่ยังไม่ฟันธงว่าดีหรือเสีย มีทั้งโอกาสและเงื่อนไขที่ต้องจัดการก่อน คำตอบขึ้นกับวิธีวางตัวของผู้ถามมาก",
+        decision: "ยังควรชั่งน้ำหนัก เก็บข้อมูล และดูจังหวะก่อนตัดสินใจขั้นสุดท้าย",
+        caution: "อย่าตัดสินจากความหวังหรือความกลัวเพียงด้านเดียว เพราะข้อมูลอาจยังไม่ครบ"
+      },
+      caution: {
+        label: "น้ำหนักเตือน",
+        title: "น้ำหนักคำทำนาย: เตือน",
+        summary: "พลังของไพ่เน้นข้อควรระวัง อุปสรรค ความล่าช้า หรือผลข้างเคียงที่ควรมองให้ชัดก่อนเดินต่อ ไม่ได้แปลว่าเลวร้ายเสมอไป แต่ไม่ควรประมาท",
+        decision: "ชะลอ ตรวจเงื่อนไข และแก้จุดเสี่ยงก่อน หากยังไม่พร้อมไม่ควรฝืนเดินหน้า",
+        caution: "ระวังการตัดสินใจเร็วเกินไป คำพูดแรง ความเข้าใจผิด เอกสารผิดพลาด หรือการรับภาระเกินตัว"
+      }
+    };
+    const baseToneByCardId = {
+      8: "caution", 12: "caution", 16: "caution", 23: "mixed", 37: "caution", 40: "mixed", 48: "mixed", 50: "caution", 51: "caution", 52: "mixed", 53: "caution",
+      2: "mixed", 9: "mixed", 11: "mixed", 20: "mixed", 25: "mixed", 31: "mixed", 32: "mixed", 43: "mixed", 49: "mixed"
+    };
+
+    function getBaseTone(card) {
+      return baseToneByCardId[card.id] || "supportive";
+    }
+
+    function weightedTone(baseTone) {
+      const random = Math.random();
+      if (baseTone === "caution") {
+        if (random < 0.62) return "caution";
+        if (random < 0.88) return "mixed";
+        return "supportive";
+      }
+      if (baseTone === "mixed") {
+        if (random < 0.28) return "caution";
+        if (random < 0.76) return "mixed";
+        return "supportive";
+      }
+      if (random < 0.22) return "caution";
+      if (random < 0.58) return "mixed";
+      return "supportive";
+    }
+
+    function prepareDrawnCard(card) {
+      const baseTone = getBaseTone(card);
+      return { ...card, baseTone, drawTone: weightedTone(baseTone) };
+    }
+
+    function getToneProfile(card) {
+      return toneProfiles[card.drawTone || getBaseTone(card)] || toneProfiles.mixed;
+    }
     const questionInput = document.querySelector("#questionInput");
     const fullNameInput = document.querySelector("#fullNameInput");
     const birthDateInput = document.querySelector("#birthDateInput");
@@ -1441,7 +1525,7 @@
               <div class="card-art">
                 ${renderCardImage(card)}
               </div>
-              <span class="card-number">ไพ่ใบที่ ${card.id}</span>
+              <span class="card-number">ไพ่ใบที่ ${card.id}</span>\n              ${card.drawTone ? `<span class="tone-badge ${card.drawTone}">${getToneProfile(card).label}</span>` : ""}
               <h3 class="card-name">${card.name}</h3>
             </span>
           </span>
@@ -1453,7 +1537,7 @@
 
     function selectCard(card, button) {
       if (button.classList.contains("selected") || chosenCards.length >= selectedSpread) return;
-      chosenCards.push(card);
+      chosenCards.push(prepareDrawnCard(card));
       button.classList.add("selected");
       button.disabled = true;
       readingStatus.textContent = selectedSpread === 1
@@ -1513,11 +1597,13 @@
       const meaning = escapeHtml(card.meaning);
       const result = escapeHtml(card.result);
       const name = escapeHtml(card.name);
+      const tone = getToneProfile(card);
 
       return `
         <div class="reading-detail">
           <section><h4>ความหมายหลักของไพ่ “${name}”</h4><p>${meaning}</p></section>
           <section><h4>ภาพรวมของคำตอบ</h4><p>${result} ไพ่ใบนี้ให้มองเหตุการณ์ตามความจริงและใช้ความหมายหลักของไพ่เป็นแกนในการตัดสินใจ ไม่ควรรีบสรุปจากความกลัวหรือความคาดหวังเพียงด้านเดียว</p></section>
+          <section><h4>${escapeHtml(tone.title)}</h4><p>${escapeHtml(tone.summary)}</p><p><strong>แนวตัดสินใจ:</strong> ${escapeHtml(tone.decision)}</p></section>
           <section><h4>ด้านบวก</h4>${listItems([
             `มีจุดเด่นเกี่ยวกับ ${card.meaning} และอาจเปิดโอกาสให้สถานการณ์ขยับไปในทางที่เหมาะสม`,
             "ถ้าตั้งสติและเลือกทำในสิ่งที่ถูกต้อง ไพ่ใบนี้ช่วยชี้ทางให้เห็นจังหวะที่ควรเดินต่อ",
@@ -1543,6 +1629,7 @@
       return `
         <div class="reading-detail">
           <section><h4>${escapeHtml(detail.title)}</h4><p>${escapeHtml(detail.core)}</p></section>
+          <section><h4>${escapeHtml(getToneProfile(card).title)}</h4><p>${escapeHtml(getToneProfile(card).summary)}</p><p><strong>แนวตัดสินใจ:</strong> ${escapeHtml(getToneProfile(card).decision)}</p></section>
           <section><h4>ด้านบวก</h4>${listItems(detail.positive)}</section>
           <section><h4>ด้านลบ / ข้อควรระวัง</h4>${listItems(detail.caution)}</section>
           <section><h4>ถ้าถามเรื่องความรัก</h4><p>${escapeHtml(detail.love)}</p></section>
@@ -1574,7 +1661,7 @@
               <div class="card-art">
                 ${renderCardImage(card)}
               </div>
-              <span class="card-number">ไพ่ใบที่ ${card.id}</span>
+              <span class="card-number">ไพ่ใบที่ ${card.id}</span>\n              ${card.drawTone ? `<span class="tone-badge ${card.drawTone}">${getToneProfile(card).label}</span>` : ""}
               <h3 class="card-name">${card.name}</h3>
               ${renderCardInterpretation(card)}
             </div>
@@ -1655,36 +1742,44 @@
     function renderOneCardSummary(card, detail, question, profile) {
       const keyMessage = detail ? detail.summary : card.result;
       const decisionMode = isDecisionQuestion(question);
+      const tone = getToneProfile(card);
       const decisionText = decisionMode
-        ? `เพราะคำถามมีลักษณะถามว่า “ควรทำหรือไม่” ไพ่ ${escapeHtml(card.name)} จึงไม่ได้ตอบแบบใช่หรือไม่ใช่ทันที แต่ให้ดูเงื่อนไขก่อนลงมือ หากสิ่งนั้นสอดคล้องกับ ${escapeHtml(card.meaning)} และคุณรับผลที่ตามมาได้ คำตอบจะเอนไปทาง “ทำได้ แต่ต้องทำอย่างมีสติและมีแผน” หากยังไม่ชัด ควรชะลอเพื่อเก็บข้อมูลเพิ่มก่อนตัดสินใจ`
-        : `คำถามนี้ควรอ่านเป็นแนวโน้มและทิศทาง ไพ่ ${escapeHtml(card.name)} ชี้ให้ดูแกนหลักคือ ${escapeHtml(card.meaning)} แล้วค่อยเทียบกับสถานการณ์จริงที่กำลังเกิดขึ้น`;
+        ? `เพราะคำถามมีลักษณะถามว่า “ควรทำหรือไม่” ไพ่ ${escapeHtml(card.name)} จึงตอบผ่านน้ำหนัก ${escapeHtml(tone.label)}: ${escapeHtml(tone.decision)} หากยังมีข้อมูลไม่ครบ ให้ถือคำตอบนี้เป็นสัญญาณให้ตรวจเงื่อนไขก่อน ไม่ใช่คำสั่งให้ทำทันที`
+        : `คำถามนี้ควรอ่านเป็นแนวโน้มและทิศทาง ไพ่ ${escapeHtml(card.name)} ชี้แกนหลักคือ ${escapeHtml(card.meaning)} โดยน้ำหนักคำทำนายรอบนี้คือ ${escapeHtml(tone.label)} จึงต้องอ่านทั้งโอกาสและความเสี่ยงพร้อมกัน`;
       const astroAdvice = profile && !profile.error
-        ? `เมื่อเทียบกับพื้นดวงวัน${profile.weekday} พลัง ${profile.planet} ทำให้คำตอบนี้ควรใช้วิธี ${escapeHtml(profile.advice)} ไพ่จึงเหมือนย้ำให้คุณเลือกทางที่ไม่ขัดกับธรรมชาติของตัวเอง`
+        ? `เมื่อเทียบกับพื้นดวงวัน${profile.weekday} พลัง ${profile.planet} ทำให้คำตอบนี้ควรใช้วิธี ${escapeHtml(profile.advice)} แต่ยังต้องให้ความสำคัญกับน้ำหนักคำทำนายรอบนี้: ${escapeHtml(tone.summary)}`
         : "หากต้องการให้คำอ่านเฉพาะตัวขึ้น สามารถใส่วันเดือนปีเกิดเพื่อให้ระบบอ่านประกอบวันเกิด ดาวประจำวัน และกำลังวัน";
 
       return `
         <div class="summary-block"><h3>คำตอบหลักจากไพ่</h3><p><strong>ไพ่ ${escapeHtml(card.name)}</strong> มีแกนความหมายคือ ${escapeHtml(card.meaning)}</p><p>${escapeHtml(keyMessage)}</p></div>
+        <div class="summary-block"><h3>${escapeHtml(tone.title)}</h3><p>${escapeHtml(tone.summary)}</p><p><strong>แนวตัดสินใจ:</strong> ${escapeHtml(tone.decision)}</p></div>
         <div class="summary-block"><h3>วิเคราะห์คำถาม</h3><p>${decisionText}</p><p>${astroAdvice}</p></div>
-        <div class="summary-block"><h3>ข้อควรระวังและแนวทางปฏิบัติ</h3><ul><li>อย่าใช้คำทำนายแทนข้อมูลจริง เอกสาร สัญญา หรือคำปรึกษาจากผู้รู้ในเรื่องสำคัญ</li><li>ถ้าเรื่องนี้เกี่ยวกับคนอื่น ให้ดูการกระทำจริงมากกว่าคำพูดหรือความคาดหวัง</li><li>หากใจยังร้อนหรือกังวลมาก ควรรอให้ใจนิ่งก่อนค่อยตัดสินใจขั้นสุดท้าย</li></ul></div>
-        <div class="summary-block"><h3>สรุปการตัดสินใจ</h3><p>คำทำนายนี้เอนไปทางให้คุณใช้ไพ่เป็นเข็มทิศ ไม่ใช่คำสั่งตายตัว ถ้าทางเลือกนั้นทำให้คุณชัดขึ้น รับผิดชอบได้ และไม่ฝืนข้อเท็จจริง ก็สามารถเดินหน้าอย่างระมัดระวังได้ แต่ถ้ายังเต็มไปด้วยความคลุมเครือ ให้ชะลอและหาหลักฐานเพิ่มก่อน</p></div>`;
+        <div class="summary-block"><h3>ข้อควรระวังและแนวทางปฏิบัติ</h3><ul><li>${escapeHtml(tone.caution)}</li><li>อย่าใช้คำทำนายแทนข้อมูลจริง เอกสาร สัญญา หรือคำปรึกษาจากผู้รู้ในเรื่องสำคัญ</li><li>ถ้าเรื่องนี้เกี่ยวกับคนอื่น ให้ดูการกระทำจริงมากกว่าคำพูดหรือความคาดหวัง</li><li>หากใจยังร้อนหรือกังวลมาก ควรรอให้ใจนิ่งก่อนค่อยตัดสินใจขั้นสุดท้าย</li></ul></div>
+        <div class="summary-block"><h3>สรุปการตัดสินใจ</h3><p>คำตอบไม่ได้เอนไปทางดีเสมอไป แต่บอกระดับความพร้อมของสถานการณ์ ถ้าน้ำหนักออกเตือนให้ชะลอและแก้จุดเสี่ยงก่อน ถ้าออกกลางให้เก็บข้อมูลเพิ่ม ถ้าออกส่งเสริมจึงค่อยเดินหน้าพร้อมแผนสำรอง</p></div>`;
     }
-
     function renderThreeCardSummary(question, profile) {
-      const parts = chosenCards.map((card, index) => `<p><strong>${escapeHtml(spreadLabels[index])}</strong> คือ ${escapeHtml(card.name)}: ${escapeHtml(card.result)} แกนของไพ่คือ ${escapeHtml(card.meaning)}</p>`).join("");
+      const parts = chosenCards.map((card, index) => {
+        const tone = getToneProfile(card);
+        return `<p><strong>${escapeHtml(spreadLabels[index])}</strong> คือ ${escapeHtml(card.name)}: ${escapeHtml(card.result)} แกนของไพ่คือ ${escapeHtml(card.meaning)} <br><strong>${escapeHtml(tone.label)}</strong>: ${escapeHtml(tone.summary)}</p>`;
+      }).join("");
       const [past, present, future] = chosenCards;
+      const tones = chosenCards.map(getToneProfile);
+      const cautionCount = chosenCards.filter((card) => card.drawTone === "caution").length;
+      const supportiveCount = chosenCards.filter((card) => card.drawTone === "supportive").length;
+      const overallTone = cautionCount >= 2 ? toneProfiles.caution : supportiveCount >= 2 ? toneProfiles.supportive : toneProfiles.mixed;
       const astroAdvice = profile && !profile.error
-        ? `เมื่อประกอบกับวัน${profile.weekday} ดาว ${profile.planet} และกำลังวัน ${profile.strength} แนวทางที่เหมาะคือ ${escapeHtml(profile.advice)} ให้ใช้พลังเด่นเรื่อง ${escapeHtml(profile.tone)} ช่วยประคองการตัดสินใจ`
+        ? `เมื่อประกอบกับวัน${profile.weekday} ดาว ${profile.planet} และกำลังวัน ${profile.strength} แนวทางที่เหมาะคือ ${escapeHtml(profile.advice)} แต่ต้องถ่วงน้ำหนักกับภาพรวมไพ่รอบนี้: ${escapeHtml(overallTone.summary)}`
         : "หากระบุวันเกิด ระบบจะช่วยอ่านร่วมกับวันเกิด ดาวประจำวัน และกำลังวันให้เฉพาะตัวมากขึ้น";
       const decisionText = isDecisionQuestion(question)
-        ? `สำหรับคำถามที่ถามว่าควรทำหรือไม่ ให้ดูสามใบเป็นลำดับเหตุผล: อดีตคือสิ่งที่พาคุณมาถึงจุดนี้ ปัจจุบันคือเงื่อนไขที่ต้องจัดการ และแนวโน้มคือผลที่ควรเตรียมรับ หากไพ่ปัจจุบันและแนวโน้มไปทิศเดียวกัน สามารถเดินต่อได้ แต่ถ้าขัดกันมากควรชะลอเพื่อปรับแผนก่อน`
-        : `สามใบนี้ควรอ่านเป็นเส้นทางของเหตุการณ์ ไม่ใช่แค่ผลลัพธ์ปลายทาง ให้ดูว่าสิ่งเดิมกำลังส่งผลต่อปัจจุบันอย่างไร และแนวโน้มกำลังชวนให้คุณวางตัวแบบไหน`;
+        ? `สำหรับคำถามที่ถามว่าควรทำหรือไม่ ให้ดูสามใบเป็นลำดับเหตุผล: อดีตคือสิ่งที่พาคุณมาถึงจุดนี้ ปัจจุบันคือเงื่อนไขที่ต้องจัดการ และแนวโน้มคือผลที่ควรเตรียมรับ ภาพรวมครั้งนี้เป็น ${escapeHtml(overallTone.label)} จึงควรใช้แนวทางว่า ${escapeHtml(overallTone.decision)}`
+        : `สามใบนี้ควรอ่านเป็นเส้นทางของเหตุการณ์ ไม่ใช่แค่ผลลัพธ์ปลายทาง ภาพรวมครั้งนี้เป็น ${escapeHtml(overallTone.label)} จึงต้องดูทั้งแรงหนุนและจุดเสี่ยงไปพร้อมกัน`;
       return `
         <div class="summary-block"><h3>ภาพรวมสามใบ</h3>${parts}</div>
+        <div class="summary-block"><h3>${escapeHtml(overallTone.title)}</h3><p>${escapeHtml(overallTone.summary)}</p><p><strong>แนวตัดสินใจ:</strong> ${escapeHtml(overallTone.decision)}</p></div>
         <div class="summary-block"><h3>การเชื่อมโยงของคำทำนาย</h3><p>จากอดีต <strong>${escapeHtml(past.name)}</strong> มาสู่ปัจจุบัน <strong>${escapeHtml(present.name)}</strong> แล้วไปยังแนวโน้ม <strong>${escapeHtml(future.name)}</strong> ภาพรวมบอกว่าเรื่องนี้มีทั้งรากเดิม เงื่อนไขปัจจุบัน และผลลัพธ์ที่ต้องเตรียมรับ ไม่ควรมองแค่ใบสุดท้ายใบเดียว</p><p>${decisionText}</p></div>
         <div class="summary-block"><h3>ประกอบดวงวันเกิด</h3><p>${astroAdvice}</p></div>
-        <div class="summary-block"><h3>คำแนะนำรวม</h3><ul><li>เริ่มจากแก้เงื่อนไขของไพ่ปัจจุบันก่อน เพราะเป็นจุดที่คุณควบคุมได้มากที่สุด</li><li>ใช้ไพ่แนวโน้มเป็นคำเตือนล่วงหน้า ว่าควรเสริมอะไรหรือหลีกเลี่ยงอะไร</li><li>ถ้าเรื่องเดิมยังไม่เปลี่ยน ควรรอ 7 วันหรือรอเหตุการณ์ใหม่ก่อนเปิดซ้ำ เพื่อไม่ให้คำตอบวนตามอารมณ์</li></ul></div>`;
+        <div class="summary-block"><h3>คำแนะนำรวม</h3><ul><li>${escapeHtml(overallTone.caution)}</li><li>เริ่มจากแก้เงื่อนไขของไพ่ปัจจุบันก่อน เพราะเป็นจุดที่คุณควบคุมได้มากที่สุด</li><li>ใช้ไพ่แนวโน้มเป็นคำเตือนล่วงหน้า ว่าควรเสริมอะไรหรือหลีกเลี่ยงอะไร</li><li>ถ้าเรื่องเดิมยังไม่เปลี่ยน ควรรอ 7 วันหรือรอเหตุการณ์ใหม่ก่อนเปิดซ้ำ เพื่อไม่ให้คำตอบวนตามอารมณ์</li></ul></div>`;
     }
-
     function buildSummary() {
       const question = questionInput.value.trim();
       const fullName = fullNameInput.value.trim();
