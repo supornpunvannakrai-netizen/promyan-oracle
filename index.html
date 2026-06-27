@@ -1,0 +1,1720 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>เปิดไพ่พรหมญาณ</title>
+  <style>
+    :root {
+      --bg: #050309;
+      --bg-deep: #12071f;
+      --purple: #2a123e;
+      --purple-soft: #43205d;
+      --gold: #d9ad52;
+      --gold-bright: #f8da8a;
+      --gold-deep: #7b5520;
+      --text: #fff7dc;
+      --muted: #cbb98c;
+      --line: rgba(217, 173, 82, 0.34);
+      --shadow: 0 22px 70px rgba(0, 0, 0, 0.45);
+      --card-ratio: 1.5;
+      --font-body: "Sarabun", "Leelawadee UI", "Noto Sans Thai", Tahoma, sans-serif;
+      --font-display: "Charm", "Charmonman", "Noto Serif Thai", "TH Charm of AU", "Angsana New", "Browallia New", serif;
+      font-family: var(--font-body);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 22% 8%, rgba(126, 70, 167, 0.35), transparent 28rem),
+        radial-gradient(circle at 78% 18%, rgba(217, 173, 82, 0.17), transparent 24rem),
+        radial-gradient(circle at 50% 100%, rgba(57, 19, 86, 0.8), transparent 30rem),
+        linear-gradient(145deg, #020104 0%, var(--bg) 36%, var(--bg-deep) 100%);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    body::before {
+      background-image:
+        radial-gradient(circle, rgba(248, 218, 138, 0.46) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(255, 255, 255, 0.22) 0 1px, transparent 1.5px);
+      background-size: 82px 82px, 137px 137px;
+      background-position: 0 0, 18px 40px;
+      animation: driftParticles 18s linear infinite;
+      opacity: 0.58;
+    }
+
+    body::after {
+      background:
+        linear-gradient(90deg, rgba(217, 173, 82, 0.08) 1px, transparent 1px),
+        linear-gradient(rgba(217, 173, 82, 0.05) 1px, transparent 1px);
+      background-size: 84px 84px;
+      mask-image: radial-gradient(circle at center, black, transparent 76%);
+      opacity: 0.35;
+    }
+
+    @keyframes driftParticles {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(-82px, -82px, 0); }
+    }
+
+    .page {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    .oracle-shell {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: calc(100vh - 40px);
+      padding: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 28%),
+        rgba(6, 5, 10, 0.74);
+      box-shadow: var(--shadow), inset 0 0 42px rgba(217, 173, 82, 0.08);
+      overflow: hidden;
+    }
+
+    .oracle-shell::before,
+    .oracle-shell::after {
+      content: "๛";
+      position: absolute;
+      color: rgba(248, 218, 138, 0.62);
+      font-size: clamp(2rem, 7vw, 4.5rem);
+      line-height: 1;
+      text-shadow: 0 0 22px rgba(217, 173, 82, 0.45);
+      pointer-events: none;
+    }
+
+    .oracle-shell::before {
+      top: 10px;
+      left: 14px;
+    }
+
+    .oracle-shell::after {
+      right: 14px;
+      bottom: 10px;
+      transform: rotate(180deg);
+    }
+
+    .topbar {
+      display: grid;
+      gap: 18px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand {
+      text-align: center;
+      padding: 14px 6px 4px;
+    }
+
+    .kicker {
+      margin: 0 0 8px;
+      color: var(--gold-bright);
+      font-size: 0.88rem;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--gold-bright);
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 12vw, 6.5rem);
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: 0;
+      font-feature-settings: "liga" 1;
+      text-shadow:
+        0 2px 0 rgba(79, 50, 16, 0.95),
+        0 5px 12px rgba(0, 0, 0, 0.42),
+        0 0 22px rgba(217, 173, 82, 0.38),
+        0 0 42px rgba(248, 218, 138, 0.18);
+    }
+
+    .subtitle {
+      margin: 12px auto 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.15rem, 3vw, 1.45rem);
+      line-height: 1.55;
+    }
+
+    .panel {
+      display: grid;
+      gap: 14px;
+      width: min(760px, 100%);
+      margin: 22px auto 0;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)),
+        rgba(17, 8, 28, 0.88);
+      box-shadow: 0 16px 52px rgba(0, 0, 0, 0.34);
+    }
+    .instructions {
+      width: min(760px, 100%);
+      margin: 12px auto 0;
+      padding: 16px;
+      border: 1px solid rgba(217, 173, 82, 0.3);
+      border-radius: 8px;
+      background: rgba(7, 5, 11, 0.68);
+      line-height: 1.65;
+    }
+
+    .instructions h2 {
+      font-family: var(--font-display);
+      letter-spacing: 0;
+      margin: 0 0 8px;
+      color: var(--gold-bright);
+      font-size: 1.12rem;
+    }
+
+    .instructions ol {
+      margin: 0;
+      padding-left: 1.4rem;
+      color: var(--muted);
+    }
+
+
+    .dream-panel {
+      width: min(920px, 100%);
+      margin: 18px auto 0;
+      padding: 16px;
+      border: 1px solid rgba(217, 173, 82, 0.3);
+      border-radius: 8px;
+      background: rgba(7, 5, 11, 0.68);
+      box-shadow: 0 16px 52px rgba(0, 0, 0, 0.26);
+    }
+
+    .dream-panel h2 {
+      margin: 0 0 8px;
+      color: var(--gold-bright);
+      font-family: var(--font-display);
+      font-size: 1.22rem;
+    }
+
+    .dream-lead,
+    .dream-copy {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .dream-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .dream-tabs button {
+      min-height: 38px;
+      padding: 7px 12px;
+      border: 1px solid rgba(217, 173, 82, 0.36);
+      border-radius: 999px;
+      color: var(--gold-bright);
+      background: rgba(9, 5, 16, 0.72);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .dream-tabs button.active {
+      color: #1a0d05;
+      border-color: var(--gold-bright);
+      background: linear-gradient(135deg, #fff1ad, #d9ad52);
+    }
+
+    .dream-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(217, 173, 82, 0.2);
+    }
+
+    .dream-meta-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .dream-result {
+      display: none;
+      gap: 10px;
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid rgba(217, 173, 82, 0.26);
+      border-radius: 8px;
+      color: var(--muted);
+      background: rgba(13, 8, 18, 0.58);
+      line-height: 1.7;
+    }
+
+    .dream-result.visible {
+      display: grid;
+    }
+
+    .dream-result h3 {
+      margin: 0;
+      color: var(--gold-bright);
+      font-size: 1.08rem;
+    }
+
+    .dream-result p,
+    .dream-result ul {
+      margin: 0;
+    }
+
+    .dream-result ul {
+      padding-left: 1.2rem;
+    }
+    .disclaimer {
+      width: min(920px, 100%);
+      margin: 0 auto 14px;
+      padding: 12px 14px;
+      border: 1px solid rgba(217, 173, 82, 0.26);
+      border-radius: 8px;
+      color: var(--gold-bright);
+      background: rgba(217, 173, 82, 0.08);
+      text-align: center;
+      line-height: 1.55;
+    }
+
+    label {
+      color: var(--gold-bright);
+      font-size: 1rem;
+    }
+
+    .field-group {
+      display: grid;
+      gap: 7px;
+    }
+
+    .birth-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    textarea,
+    input[type="text"],
+    select {
+      width: 100%;
+      border: 1px solid rgba(217, 173, 82, 0.42);
+      border-radius: 8px;
+      background: rgba(5, 3, 9, 0.72);
+      color: var(--text);
+      padding: 13px 14px;
+      font: inherit;
+      line-height: 1.5;
+      outline: none;
+      box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.35);
+    }
+
+    textarea {
+      min-height: 98px;
+      resize: vertical;
+    }
+
+    input[type="text"],
+    select {
+      min-height: 46px;
+    }
+
+    textarea:focus,
+    input[type="text"]:focus,
+    select:focus {
+      border-color: var(--gold-bright);
+      box-shadow: 0 0 0 3px rgba(217, 173, 82, 0.14), inset 0 0 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .privacy-note {
+      margin: 0;
+      padding: 10px 12px;
+      border: 1px solid rgba(248, 218, 138, 0.34);
+      border-radius: 8px;
+      color: var(--muted);
+      background: rgba(248, 218, 138, 0.08);
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+
+    .privacy-note strong {
+      display: block;
+      color: var(--gold-bright);
+      font-weight: 800;
+    }
+
+    .controls {
+      display: grid;
+      gap: 12px;
+    }
+
+    .spread-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .spread-toggle button,
+    .primary-btn,
+    .reset-btn {
+      min-height: 46px;
+      border: 1px solid rgba(217, 173, 82, 0.5);
+      border-radius: 8px;
+      color: var(--text);
+      background: rgba(9, 5, 16, 0.82);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .spread-toggle button:hover,
+    .primary-btn:hover,
+    .reset-btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--gold-bright);
+      box-shadow: 0 0 24px rgba(217, 173, 82, 0.18);
+    }
+
+    .spread-toggle button.active {
+      color: #1a0d05;
+      background: linear-gradient(135deg, #fff0ad, #d3a24c 54%, #8c5f22);
+      border-color: var(--gold-bright);
+    }
+
+    .primary-btn {
+      color: #160b04;
+      background: linear-gradient(135deg, #fff3b4, #dbac55 48%, #81561d);
+      box-shadow: 0 12px 30px rgba(217, 173, 82, 0.22);
+    }
+
+    .primary-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+      transform: none;
+    }
+
+    .reset-btn {
+      justify-self: center;
+      padding: 0 18px;
+      color: var(--gold-bright);
+    }
+
+    .altar {
+      position: relative;
+      z-index: 1;
+      margin-top: 26px;
+      padding: 4px 0 0;
+    }
+
+    .reading-status {
+      min-height: 32px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 1.02rem;
+    }
+
+    .deck-stage {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 232px;
+      margin: 10px auto 22px;
+      border-block: 1px solid rgba(217, 173, 82, 0.18);
+      background:
+        radial-gradient(ellipse at center, rgba(217, 173, 82, 0.16), transparent 58%),
+        radial-gradient(ellipse at center, rgba(80, 32, 122, 0.35), transparent 70%);
+      overflow: hidden;
+    }
+
+    .deck-stage.shuffling .shuffle-card {
+      animation: shuffleDance 720ms ease-in-out infinite;
+    }
+
+    .shuffle-card {
+      position: absolute;
+      width: 86px;
+      aspect-ratio: 0.68;
+      border-radius: 8px;
+      border: 1px solid rgba(248, 218, 138, 0.78);
+      background:
+        radial-gradient(circle at center, rgba(217, 173, 82, 0.2), transparent 45%),
+        repeating-linear-gradient(45deg, rgba(248, 218, 138, 0.12) 0 6px, transparent 6px 14px),
+        linear-gradient(155deg, #13081e, #2d1540 54%, #060308);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45), inset 0 0 0 5px rgba(0, 0, 0, 0.22);
+      transform: rotate(var(--rot)) translateX(var(--x));
+    }
+
+    .shuffle-card::before {
+      content: "พรหมญาณ";
+      position: absolute;
+      inset: 8px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(217, 173, 82, 0.42);
+      border-radius: 6px;
+      color: var(--gold-bright);
+      font-size: 0.76rem;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      opacity: 0.88;
+    }
+
+    .shuffle-card:nth-child(1) { --x: -58px; --rot: -13deg; animation-delay: -60ms; }
+    .shuffle-card:nth-child(2) { --x: -26px; --rot: -5deg; animation-delay: -120ms; }
+    .shuffle-card:nth-child(3) { --x: 8px; --rot: 4deg; animation-delay: -180ms; }
+    .shuffle-card:nth-child(4) { --x: 42px; --rot: 12deg; animation-delay: -240ms; }
+
+    @keyframes shuffleDance {
+      0%, 100% { transform: rotate(var(--rot)) translateX(var(--x)) translateY(0); }
+      30% { transform: rotate(calc(var(--rot) * -1)) translateX(calc(var(--x) * -0.5)) translateY(-18px); }
+      62% { transform: rotate(var(--rot)) translateX(calc(var(--x) * 0.7)) translateY(10px); }
+    }
+
+    .choice-grid,
+    .result-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: min(980px, 100%);
+      margin: 0 auto;
+    }
+
+    .choice-card,
+    .reading-card {
+      position: relative;
+      min-width: 0;
+      perspective: 1100px;
+    }
+
+    .choice-card {
+      min-height: 178px;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .choice-card:disabled {
+      cursor: default;
+      opacity: 0.54;
+    }
+
+    .card-inner {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform 700ms cubic-bezier(0.2, 0.72, 0.2, 1);
+    }
+
+    .choice-card.selected .card-inner,
+    .reading-card.revealed .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(248, 218, 138, 0.72);
+      backface-visibility: hidden;
+      overflow: hidden;
+      box-shadow: 0 16px 42px rgba(0, 0, 0, 0.44);
+    }
+
+    .card-back {
+      background:
+        radial-gradient(circle at center, rgba(255, 232, 159, 0.2), transparent 40%),
+        radial-gradient(circle at 50% 22%, rgba(106, 50, 153, 0.7), transparent 45%),
+        repeating-linear-gradient(135deg, rgba(248, 218, 138, 0.12) 0 5px, transparent 5px 13px),
+        linear-gradient(155deg, #0a0611, #2b143f 58%, #070309);
+    }
+
+    .card-back::before,
+    .card-front::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 1px solid rgba(248, 218, 138, 0.46);
+      border-radius: 6px;
+      pointer-events: none;
+    }
+
+    .card-back .sigil {
+      width: 58px;
+      height: 58px;
+      border: 1px solid rgba(248, 218, 138, 0.72);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--gold-bright);
+      font-size: 2rem;
+      box-shadow: 0 0 34px rgba(217, 173, 82, 0.36);
+    }
+
+    .card-back span:last-child {
+      color: var(--gold-bright);
+      font-size: 0.86rem;
+    }
+
+    .card-front {
+      transform: rotateY(180deg);
+      background:
+        linear-gradient(180deg, rgba(255, 244, 192, 0.16), transparent 28%),
+        radial-gradient(circle at 50% 12%, rgba(217, 173, 82, 0.18), transparent 42%),
+        linear-gradient(155deg, #140b17, #241033 58%, #080407);
+    }
+
+    .reading-card {
+      min-height: 620px;
+    }
+
+
+    .detailed-reading-card {
+      min-height: 1180px;
+    }
+
+    .detailed-reading-card .card-front {
+      overflow-y: auto;
+      scrollbar-color: rgba(217, 173, 82, 0.55) rgba(5, 3, 9, 0.45);
+    }
+    .reading-card .card-front {
+      align-content: start;
+      justify-items: stretch;
+      text-align: center;
+      padding: 14px;
+    }
+
+    .choice-card .card-front {
+      align-content: start;
+      justify-items: stretch;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .choice-card .card-art {
+      max-height: 124px;
+      min-height: 96px;
+      margin-bottom: 2px;
+    }
+
+
+    .reading-card .card-art {
+      aspect-ratio: 2 / 3;
+      max-height: 440px;
+      min-height: 240px;
+      margin-bottom: 6px;
+      line-height: 0;
+    }
+
+    .reading-card .card-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #080407;
+    }
+
+    .card-art .card-illustration {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .card-art img {
+      position: relative;
+      z-index: 1;
+    }
+
+    .choice-card .card-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .choice-card .card-name {
+      font-size: 0.95rem;
+    }
+
+    .spread-label {
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 auto 6px;
+      padding: 3px 11px;
+      border-radius: 999px;
+      color: #1a0d05;
+      background: linear-gradient(135deg, #fff1ad, #d9ad52);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .card-art {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / var(--card-ratio);
+      max-height: 540px;
+      border-radius: 7px;
+      border: 1px solid rgba(217, 173, 82, 0.38);
+      background:
+        radial-gradient(circle at 50% 32%, var(--art), transparent 28%),
+        radial-gradient(circle at 50% 42%, rgba(255, 235, 172, 0.36), transparent 25%),
+        linear-gradient(160deg, rgba(255, 255, 255, 0.1), transparent 40%),
+        linear-gradient(145deg, #2c172e, #0d0912);
+      overflow: hidden;
+    }
+
+    .card-art img,
+    .card-illustration {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .fallback-symbol {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: rgba(255, 239, 187, 0.95);
+      font-size: clamp(2rem, 12vw, 4.2rem);
+      text-shadow: 0 0 24px rgba(217, 173, 82, 0.5);
+    }
+
+    .card-number {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .card-name {
+      margin: 0;
+      color: var(--gold-bright);
+      font-size: 1.22rem;
+      line-height: 1.25;
+    }
+
+    .card-meaning,
+    .card-result {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+
+    .card-result {
+      color: var(--muted);
+    }
+
+
+    .reading-detail {
+      display: grid;
+      gap: 12px;
+      margin-top: 10px;
+      text-align: left;
+    }
+
+    .reading-detail section {
+      padding: 12px;
+      border: 1px solid rgba(217, 173, 82, 0.22);
+      border-radius: 8px;
+      background: rgba(5, 3, 9, 0.38);
+    }
+
+    .reading-detail h4 {
+      margin: 0 0 6px;
+      color: var(--gold-bright);
+      font-size: 1rem;
+    }
+
+    .reading-detail p,
+    .reading-detail ul {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 0.94rem;
+    }
+
+    .reading-detail ul {
+      padding-left: 1.2rem;
+    }
+
+    .answer-panel .reading-detail {
+      margin-top: 12px;
+    }
+    .answer-panel {
+      display: none;
+      width: min(920px, 100%);
+      margin: 22px auto 0;
+      padding: 16px;
+      border: 1px solid rgba(217, 173, 82, 0.3);
+      border-radius: 8px;
+      background: rgba(7, 5, 11, 0.72);
+      line-height: 1.75;
+    }
+
+    .answer-panel.visible {
+      display: block;
+    }
+
+    .answer-panel h2 {
+      margin: 0 0 8px;
+      color: var(--gold-bright);
+      font-size: 1.35rem;
+    }
+
+    #answerText {
+      display: grid;
+      gap: 12px;
+      color: var(--muted);
+    }
+
+    .summary-block {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid rgba(217, 173, 82, 0.22);
+      border-radius: 8px;
+      background: rgba(13, 8, 18, 0.5);
+    }
+
+    .summary-block h3 {
+      margin: 0;
+      color: var(--gold-bright);
+      font-size: 1.05rem;
+    }
+
+    .summary-block p,
+    .summary-block ul {
+      margin: 0;
+    }
+
+    .summary-block ul {
+      padding-left: 1.2rem;
+    }
+
+    .empty-note {
+      width: min(760px, 100%);
+      margin: 8px auto 0;
+      color: rgba(203, 185, 140, 0.75);
+      text-align: center;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (min-width: 620px) {
+      .page {
+        padding: 28px 22px 48px;
+      }
+
+      .oracle-shell {
+        padding: 24px;
+      }
+
+      .controls {
+        grid-template-columns: 1fr auto;
+        align-items: end;
+      }
+
+      .birth-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr);
+      }
+
+      .dream-meta-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      }
+
+      .primary-btn {
+        min-width: 154px;
+      }
+
+      .choice-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .choice-card {
+        min-height: 206px;
+      }
+
+      .result-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 960px) {
+      .topbar {
+        padding-inline: 24px;
+      }
+
+      .choice-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+
+      .choice-card {
+        min-height: 218px;
+      }
+
+      .result-grid.one-card {
+        grid-template-columns: minmax(320px, 440px);
+        justify-content: center;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 1ms !important;
+        scroll-behavior: auto !important;
+        transition-duration: 1ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="oracle-shell" aria-labelledby="pageTitle">
+      <div class="topbar">
+        <header class="brand">
+          <p class="kicker">ตั้งจิตให้นิ่ง แล้วเลือกไพ่ด้วยใจสงบ</p>
+          <h1 id="pageTitle">พรหมญาณพยากรณ์</h1>
+          <p class="subtitle">ตรวจดวงชะตา ด้วยศาสตร์ไพ่ พรหมญาณ</p>
+        </header>
+
+        <section class="panel" aria-label="ตั้งคำถามและเลือกรูปแบบการเปิดไพ่">
+          <div class="field-group">
+            <label for="questionInput">คำถามของคุณ</label>
+            <textarea id="questionInput" placeholder="พิมพ์คำถาม เช่น ฉันควรทำสิ่งนี้หรือไม่ เรื่องงาน ความรัก การเงิน หรือทางเลือกที่กำลังลังเล"></textarea>
+          </div>
+          <div class="birth-grid">
+            <div class="field-group">
+              <label for="fullNameInput">ชื่อ นามสกุล</label>
+              <input id="fullNameInput" type="text" autocomplete="name" placeholder="ใช้เพื่อประกอบคำทำนายเท่านั้น">
+            </div>
+            <div class="field-group">
+              <label for="birthDateInput">วันเดือนปีเกิด</label>
+              <input id="birthDateInput" type="text" inputmode="numeric" placeholder="เช่น 12/08/2535 หรือ 12/08/1992">
+            </div>
+          </div>
+          <p class="privacy-note"><strong>ข้อมูลนี้จะไม่อยู่ในระบบ ไม่มีการเก็บบันทึกใดๆ</strong> ใช้เฉพาะบนหน้านี้เพื่อสร้างคำทำนายครั้งปัจจุบันเท่านั้น</p>
+          <div class="controls">
+            <div class="spread-toggle" role="group" aria-label="จำนวนไพ่">
+              <button type="button" class="active" data-spread="1" aria-pressed="true">เปิด 1 ใบ</button>
+              <button type="button" data-spread="3" aria-pressed="false">เปิด 3 ใบ</button>
+            </div>
+            <button type="button" id="shuffleBtn" class="primary-btn">สับไพ่</button>
+          </div>
+        </section>
+
+        <section id="instructions" class="instructions" aria-labelledby="instructionsTitle">
+          <h2 id="instructionsTitle">วิธีเปิดไพ่และกติกา</h2>
+          <ol>
+            <li>ตั้งคำถามให้ชัด ใส่ชื่อ-นามสกุลและวันเดือนปีเกิดหากต้องการอ่านแนวโน้มประกอบดวงเดิม</li>
+            <li>กดสับไพ่ แล้วระบบจะแสดงไพ่คว่ำครบ 54 ใบให้เลือกจากทั้งสำรับ</li>
+            <li>จำกัดการถามเรื่องเดิม วันละ 1 ครั้ง เพื่อให้คำตอบไม่วนซ้ำตามอารมณ์ชั่วขณะ</li>
+            <li>สามารถเปิดไพ่ประจำวันได้ทุกวัน สำหรับตั้งหลักและทบทวนพลังของวันนั้น</li>
+            <li>หากต้องการเปิดเรื่องเดิมอีกครั้ง ระบบจะแนะนำให้รอ 7 วัน หรือจนกว่าจะมีเหตุการณ์ใหม่</li>
+            <li>เลือกไพ่ตามจำนวนที่กำหนด อ่านคำทำนายเป็นแนวทางเพื่อทบทวนและตัดสินใจอย่างมีสติ</li>
+          </ol>
+        </section>
+        <section id="dreamModule" class="dream-panel hidden" aria-labelledby="dreamTitle" aria-hidden="true">
+          <h2 id="dreamTitle">หมวดทำนายฝันและเลขจากฝัน</h2>
+          <p class="dream-lead">เลือกหัวข้อเพื่ออ่านแนวทาง หรือพิมพ์ความฝันเพื่อให้ระบบช่วยสรุปความหมายและเลขเชิงสัญลักษณ์จากความฝัน</p>
+          <p id="dreamDatabaseCount" class="dream-copy"></p>
+          <div class="dream-tabs" role="tablist" aria-label="หมวดทำนายฝัน">
+            <button type="button" class="active" data-dream-tab="meaning">ทำนายฝัน</button>
+            <button type="button" data-dream-tab="cause">เหตุแห่งความฝัน</button>
+            <button type="button" data-dream-tab="time">วันเวลาฝันบอกเหตุ</button>
+            <button type="button" data-dream-tab="lunar">ฝันในวันขึ้นแรมค่ำ</button>
+            <button type="button" data-dream-tab="numbers">ความฝันกับตัวเลข</button>
+            <button type="button" data-dream-tab="remedy">แก้เคล็ดฝันร้าย</button>
+          </div>
+          <p id="dreamTopicText" class="dream-copy"></p>
+          <div class="dream-form" aria-label="กรอกความฝันเพื่อทำนาย">
+            <div class="field-group">
+              <label for="dreamInput">เล่าความฝัน</label>
+              <textarea id="dreamInput" placeholder="เช่น ฝันเห็นน้ำ บ้านเก่า คนรัก พญานาค วัด หรือการเดินทาง"></textarea>
+            </div>
+            <div class="dream-meta-grid">
+              <div class="field-group">
+                <label for="dreamTimeInput">ช่วงเวลาที่ฝัน</label>
+                <select id="dreamTimeInput">
+                  <option value="ไม่ระบุ">ไม่ระบุ</option>
+                  <option value="หัวค่ำ">หัวค่ำ</option>
+                  <option value="กลางคืน">กลางคืน</option>
+                  <option value="ใกล้รุ่ง">ใกล้รุ่ง</option>
+                  <option value="หลังตื่นแล้วจำได้ชัด">หลังตื่นแล้วจำได้ชัด</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="dreamLunarInput">วันขึ้นแรม</label>
+                <select id="dreamLunarInput">
+                  <option value="ไม่ระบุ">ไม่ระบุ</option>
+                  <option value="ขึ้น 1-7 ค่ำ">ขึ้น 1-7 ค่ำ</option>
+                  <option value="ขึ้น 8-15 ค่ำ">ขึ้น 8-15 ค่ำ</option>
+                  <option value="แรม 1-7 ค่ำ">แรม 1-7 ค่ำ</option>
+                  <option value="แรม 8-15 ค่ำ">แรม 8-15 ค่ำ</option>
+                </select>
+              </div>
+            </div>
+            <button type="button" id="dreamBtn" class="primary-btn">ทำนายฝัน</button>
+          </div>
+          <article id="dreamResult" class="dream-result" aria-live="polite"></article>
+        </section>      </div>
+
+      <section class="altar" aria-live="polite">
+        <p id="readingStatus" class="reading-status">กรอกคำถาม เลือกรูปแบบ แล้วกดสับไพ่</p>
+        <p id="oracleDisclaimer" class="disclaimer">คำทำนายนี้เป็นแนวทางเพื่อการพิจารณาและสะท้อนมุมมอง ไม่ใช่ข้อยืนยันผลลัพธ์ในอนาคต</p>
+
+        <div id="deckStage" class="deck-stage" aria-hidden="true">
+          <div class="shuffle-card"></div>
+          <div class="shuffle-card"></div>
+          <div class="shuffle-card"></div>
+          <div class="shuffle-card"></div>
+        </div>
+
+        <div id="choiceGrid" class="choice-grid hidden"></div>
+        <div id="resultGrid" class="result-grid hidden"></div>
+
+        <article id="answerPanel" class="answer-panel">
+          <h2>คำทำนายรวม</h2>
+          <div id="answerText"></div>
+        </article>
+
+        <p class="empty-note">ข้อมูลไพ่เป็นตัวอย่างในไฟล์เดียว สามารถเปลี่ยนชื่อ ความหมาย คำทำนาย หรือเพิ่ม path รูปภาพในตัวแปร <strong>oracleCards</strong> ได้ทันที</p>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const oracleCards = [
+      { id: 1, name: "พระพรหม", meaning: "ความสำเร็จสูงสุด ผู้ใหญ่เมตตา โชคดีด้านการงาน", result: "เรื่องที่ถามมีโอกาสสำเร็จ หากตั้งเจตนาให้ชัดและทำด้วยความสุจริต จะมีแรงหนุนจากผู้ใหญ่หรือผู้มีบารมี", symbol: "๏", color: "#c88a46", image: "card-images-web/card-01-พระพรหม.jpg" },
+      { id: 2, name: "พระศิวะ", meaning: "การเปลี่ยนแปลงถอนเคราะห์ เริ่มต้นสิ่งใหม่", result: "สิ่งเก่ากำลังคลี่คลาย เปิดทางให้เริ่มใหม่ อย่ากลัวการตัดสินใจที่ทำให้ชีวิตเบาขึ้น", symbol: "ศิ", color: "#5662b5", image: "card-images-web/card-02-พระศิวะ.jpg" },
+      { id: 3, name: "พระนารายณ์", meaning: "ความมั่นคง ความสำเร็จ ผู้ใหญ่สนับสนุน", result: "สถานการณ์มีฐานที่ดี ควรวางแผนระยะยาวและรับคำแนะนำจากคนที่ไว้ใจได้", symbol: "น", color: "#4fa6a2", image: "card-images-web/card-03-พระนารายณ์.jpg" },
+      { id: 4, name: "พระพิฆเนศ", meaning: "ขจัดอุปสรรค สมหวัง งานสำเร็จราบรื่น", result: "อุปสรรคเริ่มเปิดทาง เหมาะกับการเจรจา สมัครงาน เริ่มโปรเจกต์ หรือขอความช่วยเหลือ", symbol: "ค", color: "#d99a4e", image: "card-images-web/card-04-พระพิฆเนศ.jpg" },
+      { id: 5, name: "พระแม่ลักษมี", meaning: "โชคลาภ เงินทอง ความรัก ความสุข ความมั่งคั่ง", result: "เรื่องเงินและความสัมพันธ์มีสัญญาณดี จงรับโอกาสด้วยใจอ่อนโยนและรู้คุณ", symbol: "ล", color: "#d45b76", image: "card-images-web/card-05-พระแม่ลักษมี.jpg" },
+      { id: 6, name: "พระแม่อุมา", meaning: "ความรักเมตตา ความอบอุ่น ครอบครัวดี", result: "พลังของความเข้าใจจะช่วยคลี่คลายเรื่องนี้ เหมาะกับการประนีประนอมและดูแลใจคนใกล้ตัว", symbol: "อุ", color: "#da7c72", image: "card-images-web/card-06-พระแม่อุมา.jpg" },
+      { id: 7, name: "พระขันธกุมาร", meaning: "ชัยชนะ ความก้าวหน้า ความกล้าหาญ", result: "ต้องลงมืออย่างเด็ดขาด ความกล้าและวินัยจะพาคุณผ่านการแข่งขันหรือแรงกดดัน", symbol: "ช", color: "#b0613d", image: "card-images-web/card-07-พระขันธกุมาร.jpg" },
+      { id: 8, name: "พระราหู", meaning: "เงื่อนงำ อุปสรรค ความไม่แน่นอน ต้องระวัง", result: "อย่าเพิ่งเชื่อข้อมูลเพียงด้านเดียว ตรวจเอกสาร คำพูด และแรงจูงใจของคนรอบตัวให้ดี", symbol: "ร", color: "#3b4059", image: "card-images-web/card-08-พระราหู.jpg" },
+      { id: 9, name: "พระเกตุ", meaning: "การหลุดพ้น การเปลี่ยนผ่าน จิตวิญญาณ", result: "คำตอบอยู่ที่การปล่อยวางบางสิ่ง เมื่อใจนิ่ง คุณจะเห็นทางออกที่ไม่เคยเห็นมาก่อน", symbol: "ก", color: "#856338", image: "card-images-web/card-09-พระเกตุ.jpg" },
+      { id: 10, name: "พระอาทิตย์", meaning: "ความสำเร็จ ชื่อเสียง เกียรติยศ พลัง อำนาจ", result: "จังหวะนี้เหมาะกับการแสดงความสามารถ ผลงานจะถูกมองเห็นและได้รับการยอมรับ", symbol: "สุ", color: "#e0a13c", image: "card-images-web/card-10-พระอาทิตย์.jpg" },
+      { id: 11, name: "พระจันทร์", meaning: "อารมณ์ ความรู้สึก ความอ่อนไหว ความลึกลับ", result: "ฟังสัญชาตญาณ แต่อย่าปล่อยให้อารมณ์นำทั้งหมด เรื่องนี้ยังมีส่วนที่ต้องค่อย ๆ เปิดเผย", symbol: "จ", color: "#8ea2cc", image: "card-images-web/card-11-พระจันทร์.jpg" },
+      { id: 12, name: "พระอังคาร", meaning: "พลังงาน การต่อสู้ อุบัติเหตุ เลือดร้อน", result: "ควรใจเย็นเป็นพิเศษ ความเร่งรีบอาจทำให้เสียจังหวะ ใช้พลังไปกับการแก้ปัญหาแทนการปะทะ", symbol: "อ", color: "#b44a37", image: "card-images-web/card-12-พระอังคาร.jpg" },
+      { id: 13, name: "พระพุธ", meaning: "สติปัญญา การเจรจา การค้าขาย ข่าวสาร", result: "คำพูดและข้อมูลคือกุญแจของเรื่องนี้ เหมาะกับการคุย เผยแพร่ เรียนรู้ หรือทำข้อตกลง", symbol: "พุ", color: "#4f9d62", image: "card-images-web/card-13-พระพุธ.jpg" },
+      { id: 14, name: "พระพฤหัสบดี", meaning: "โชคลาภ ความรู้ ผู้ใหญ่เมตตา ความเจริญ", result: "ครู ผู้ใหญ่ หรือความรู้ใหม่จะช่วยยกระดับสถานการณ์ ทำสิ่งที่ถูกต้องแล้วผลดีจะตามมา", symbol: "พฤ", color: "#d0a04f", image: "card-images-web/card-14-พระพฤหัสบดี.jpg" },
+      { id: 15, name: "พระศุกร์", meaning: "ความรัก เสน่ห์ ความสุข ความสวย ศิลปะ บันเทิง", result: "เรื่องนี้ต้องใช้เสน่ห์ ความละเมียด และความจริงใจ ความสุขกำลังกลับมาเมื่อคุณให้คุณค่าตัวเอง", symbol: "ศุ", color: "#d681a7", image: "card-images-web/card-15-พระศุกร์.jpg" },
+      { id: 16, name: "พระเสาร์", meaning: "ความหนัก ความอดทน ความล่าช้า บทเรียนชีวิต", result: "ผลลัพธ์ยังต้องใช้เวลา อย่าท้อกับความช้า เพราะสิ่งที่ได้จะมั่นคงกว่าการรีบร้อน", symbol: "ส", color: "#555269", image: "card-images-web/card-16-พระเสาร์.jpg" },
+      { id: 17, name: "เจ้าพ่อกวนอู", meaning: "ความซื่อสัตย์ บารมี ช่วยเหลือ ปกป้องคุ้มครอง", result: "ยืนอยู่บนความถูกต้องแล้วจะมีคนเคารพและช่วยเหลือ ความซื่อสัตย์คือเกราะคุ้มกันของคุณ", symbol: "อู", color: "#3d7b58", image: "card-images-web/card-17-เจ้าพ่อกวนอู.jpg" },
+      { id: 18, name: "เจ้าแม่กวนอิม", meaning: "เมตตา คุ้มครอง ปลอดภัย สมหวังในความดี", result: "เมตตาและการให้อภัยจะเปิดทาง เรื่องที่กังวลมีแรงคุ้มครอง ขอเพียงทำด้วยใจบริสุทธิ์", symbol: "อิม", color: "#c7c4b4", image: "card-images-web/card-18-เจ้าแม่กวนอิม.jpg" },
+      { id: 19, name: "พระสังกัจจายน์", meaning: "โชคลาภใหญ่ ความสุข ความอิ่มสมหวังไม่คาดคิด", result: "ข่าวดีหรือผลตอบแทนกำลังมา อาจเป็นลาภจากงาน คนรัก ครอบครัว หรือสิ่งที่เคยทำไว้", symbol: "ลาภ", color: "#d49d50", image: "card-images-web/card-19-พระสังกัจจายน์.jpg" },
+      { id: 20, name: "หลวงปู่ทวด", meaning: "คุ้มครอง ปกป้อง แคล้วคลาด ปลอดภัย", result: "อย่ากังวลเกินไป คุณมีแรงคุ้มครอง เหมาะกับการเดินทาง แก้ปัญหา และผ่านเรื่องเสี่ยงอย่างมีสติ", symbol: "ทวด", color: "#5e5a4f", image: "card-images-web/card-20-หลวงปู่ทวด.jpg" },
+      { id: 21, name: "พญานาค", meaning: "โชคลาภจากน้ำ การเงิน สิ่งศักดิ์สิทธิ์", result: "ลางดีด้านทรัพย์และความศรัทธา เหมาะกับการรักษาสัจจะ ทำบุญ และขอพรด้วยใจนิ่ง", symbol: "นาค", color: "#2e8d7d", image: "card-images-web/card-21-พญานาค.jpg" },
+      { id: 22, name: "พญาครุฑ", meaning: "อำนาจ บารมี ความสำเร็จ ผู้ใหญ่หนุนหลัง", result: "คุณมีพลังนำและพลังยกฐานะ จงกล้ารับผิดชอบมากขึ้น โอกาสใหญ่ต้องใช้ใจใหญ่", symbol: "ครุฑ", color: "#b24d28", image: "card-images-web/card-22-พญาครุฑ.jpg" },
+      { id: 23, name: "เสือ", meaning: "อำนาจ วาสนา เสน่ห์ มหาอำนาจ ระวังศัตรู", result: "คุณโดดเด่นและมีอิทธิพล แต่ต้องใช้ความสุขุม ระวังการปะทะกับคนที่ไม่เปิดหน้า", symbol: "เสือ", color: "#c47a37", image: "card-images-web/card-23-เสือ.jpg" },
+      { id: 24, name: "ช้าง", meaning: "ความมั่นคง โชคลาภใหญ่ คนช่วยเหลือ", result: "เรื่องนี้ไปได้ช้าแต่มั่นคง จะมีผู้ใหญ่หรือเครือข่ายช่วยพยุงให้สำเร็จ", symbol: "ช้าง", color: "#8a8276", image: "card-images-web/card-24-ช้าง.jpg" },
+      { id: 25, name: "ม้า", meaning: "การเดินทาง ความก้าวหน้า เร็ว รวดเร็ว", result: "ข่าวหรือความคืบหน้าจะมาไว เตรียมตัวให้พร้อมและอย่าพลาดจังหวะสำคัญ", symbol: "ม้า", color: "#a96e3f", image: "card-images-web/card-25-ม้า.jpg" },
+      { id: 26, name: "วัว", meaning: "ความอุดมสมบูรณ์ ทรัพย์สิน เงินทอง ความมั่นคง", result: "เหมาะกับการสะสม วางแผนเงิน หรือสร้างฐานะ ความอดทนจะกลายเป็นผลผลิตงาม", symbol: "วัว", color: "#c9b06d", image: "card-images-web/card-26-วัว.jpg" },
+      { id: 27, name: "สิงโต", meaning: "อำนาจ ศักดิ์ศรี ความกล้าหาญ ความภาคภูมิใจ", result: "จงยืนอย่างสง่างามและมั่นใจ เรื่องนี้ต้องการภาวะผู้นำมากกว่าการลังเล", symbol: "สิงห์", color: "#c28a45", image: "card-images-web/card-27-สิงโต.jpg" },
+      { id: 28, name: "นกยูง", meaning: "ความงาม โชคดี ความรัก ความภาคภูมิใจ", result: "เสน่ห์และภาพลักษณ์มีผลมาก ความสัมพันธ์หรือผลงานจะดีขึ้นเมื่อคุณกล้าเปล่งประกาย", symbol: "ยูง", color: "#4d9974", image: "card-images-web/card-28-นกยูง.jpg" },
+      { id: 29, name: "นกอินทรี", meaning: "ความสำเร็จ อำนาจ การมองไกล นักปกครอง", result: "มองภาพใหญ่ อย่าจมกับรายละเอียดเล็กเกินไป แผนที่สูงและไกลจะพาไปถึงเป้าหมาย", symbol: "อินทรี", color: "#525b67", image: "card-images-web/card-29-นกอินทรี.jpg" },
+      { id: 30, name: "สุนัข", meaning: "มิตรภาพ ซื่อสัตย์ เพื่อนช่วยเหลือ ความจงรักภักดี", result: "คนใกล้ตัวช่วยได้มากกว่าที่คิด เลือกคนที่จริงใจกับคุณและให้ความจริงใจกลับไป", symbol: "สุนัข", color: "#9a7a54", image: "card-images-web/card-30-สุนัข.jpg" },
+      { id: 31, name: "กระต่าย", meaning: "ความอ่อนโยน ความรัก ความโชคดีเล็ก ๆ", result: "เรื่องนี้ต้องค่อยเป็นค่อยไป ความนุ่มนวลจะชนะความแข็ง ความสุขเล็ก ๆ จะพาไปสู่ผลลัพธ์ดี", symbol: "กระ", color: "#d6c7b3", image: "card-images-web/card-31-กระต่าย.jpg" },
+      { id: 32, name: "เต่า", meaning: "อายุยืน มั่นคง การสะสม ความอดทน", result: "อย่าเร่งผลลัพธ์ งานหรือความสัมพันธ์นี้ต้องใช้เวลา แต่มีแนวโน้มคงทน", symbol: "เต่า", color: "#66734f", image: "card-images-web/card-32-เต่า.jpg" },
+      { id: 33, name: "ปลา", meaning: "โชคลาภ เงินทอง ความอุดมสมบูรณ์ การค้าขาย", result: "จังหวะการเงินดีขึ้น เหมาะกับการขาย การลงทุนเล็ก ๆ หรือการหมุนเงินอย่างมีสติ", symbol: "ปลา", color: "#4d94a8", image: "card-images-web/card-33-ปลา.jpg" },
+      { id: 34, name: "ดอกบัว", meaning: "ความบริสุทธิ์ ปัญญา การพัฒนาจิตใจ", result: "คำตอบของเรื่องนี้อยู่ที่ความสงบและศีลธรรม ยิ่งใจใส ทางออกยิ่งชัด", symbol: "บัว", color: "#d884a4", image: "card-images-web/card-34-ดอกบัว.jpg" },
+      { id: 35, name: "ศาลเจ้า", meaning: "สิ่งศักดิ์สิทธิ์คุ้มครอง ขอพรสำเร็จ ความศรัทธา", result: "ควรกลับมาพึ่งศรัทธาและความดี คำขอมีโอกาสสมหวังเมื่อคุณรักษาสัจจะ", symbol: "ศาล", color: "#a4653d", image: "card-images-web/card-35-ศาลเจ้า.jpg" },
+      { id: 36, name: "เทวดา", meaning: "สิ่งศักดิ์สิทธิ์คุ้มครอง โชคชะตาเปิด", result: "ทางสว่างกำลังเปิด เหมาะกับการเริ่มสิ่งดี ขอความช่วยเหลือ หรือรับโอกาสที่มาอย่างนุ่มนวล", symbol: "เทว", color: "#c9a3d8", image: "card-images-web/card-36-เทวดา.jpg" },
+      { id: 37, name: "ดาบ", meaning: "การตัดสินใจ ขาดความชัดเจน ความขัดแย้ง", result: "ต้องตัดสินใจให้เด็ดขาดและใช้เหตุผล ระวังคำพูดที่บาดใจหรือการตัดสัมพันธ์เร็วเกินไป", symbol: "ดาบ", color: "#8990a0", image: "card-images-web/card-37-ดาบ.jpg" },
+      { id: 38, name: "คทา", meaning: "อำนาจ บารมี การควบคุม การนำ", result: "ถึงเวลารับบทผู้นำ จัดระเบียบสถานการณ์ และสื่อสารให้คนอื่นเห็นทิศทางเดียวกัน", symbol: "คทา", color: "#9b6a38", image: "card-images-web/card-38-คทา.jpg" },
+      { id: 39, name: "ธนู", meaning: "เป้าหมาย ความมุ่งมั่น ความสำเร็จ", result: "ตั้งเป้าให้ตรง แล้วลงมือทีละก้าว อย่าหันเหเพราะเสียงรอบข้าง ความสำเร็จอยู่ในระยะยิง", symbol: "ธนู", color: "#c49642", image: "card-images-web/card-39-ธนู.jpg" },
+      { id: 40, name: "โล่", meaning: "การป้องกัน ความปลอดภัย คนคุ้มครอง", result: "ควรวางขอบเขตให้ชัด ปกป้องพลังใจ ทรัพย์สิน หรือความลับของตัวเองไว้ก่อน", symbol: "โล่", color: "#757f8b", image: "card-images-web/card-40-โล่.jpg" },
+      { id: 41, name: "บัลลังก์", meaning: "ความสำเร็จ ตำแหน่งสูง เกียรติยศ", result: "มีโอกาสได้สถานะใหม่ หน้าที่ใหม่ หรือการยอมรับ แต่ต้องรับผิดชอบให้สมกับตำแหน่ง", symbol: "บัล", color: "#9d5137", image: "card-images-web/card-41-บัลลังก์.jpg" },
+      { id: 42, name: "มงกุฎ", meaning: "ความสำเร็จสูงสุด เกียรติยศ ผู้ยอมรับ", result: "คำตอบเป็นไปในทางดี มีโอกาสชนะ ได้รับเลือก หรือได้รับคำชมจากผลงาน", symbol: "มง", color: "#d9aa4a", image: "card-images-web/card-42-มงกุฎ.jpg" },
+      { id: 43, name: "พระคัมภีร์", meaning: "ปัญญา ความรู้ การศึกษา ธรรมะ", result: "หาความรู้เพิ่มก่อนตัดสินใจ คำตอบอยู่ในเอกสาร กฎเกณฑ์ ครู หรือประสบการณ์เดิม", symbol: "คัม", color: "#9d7448", image: "card-images-web/card-43-พระคัมภีร์.jpg" },
+      { id: 44, name: "แก้วมณี", meaning: "โชคลาภล้ำค่า สิ่งดีงาม ความบริสุทธิ์", result: "คุณมีของดีในมือ อย่าประเมินคุณค่าตัวเองต่ำ โอกาสสำคัญอาจมาในรูปแบบเรียบง่าย", symbol: "มณี", color: "#75b8c0", image: "card-images-web/card-44-แก้วมณี.jpg" },
+      { id: 45, name: "เงินทอง", meaning: "ความมั่งคั่ง เงินทอง ทรัพย์สิน", result: "เรื่องการเงินมีทางขยับขึ้น เหมาะกับการจัดระบบรายรับรายจ่ายและรับโอกาสทางทรัพย์", symbol: "ทอง", color: "#d2a447", image: "card-images-web/card-45-เงินทอง.jpg" },
+      { id: 46, name: "บ้านเรือน", meaning: "ความมั่นคง ครอบครัว อสังหาริมทรัพย์", result: "บ้าน ครอบครัว หรือฐานชีวิตเป็นประเด็นสำคัญ ควรดูแลรากฐานก่อนขยายสิ่งใหม่", symbol: "บ้าน", color: "#9a6f46", image: "card-images-web/card-46-บ้านเรือน.jpg" },
+      { id: 47, name: "เรือ", meaning: "การเดินทาง การค้า โอกาสใหม่", result: "มีการเคลื่อนย้ายหรือโอกาสจากต่างถิ่น อย่ากลัวการออกจากพื้นที่เดิม", symbol: "เรือ", color: "#6c7e89", image: "card-images-web/card-47-เรือ.jpg" },
+      { id: 48, name: "ถนน", meaning: "เส้นทางชีวิต ตัวเลือก การตัดสินใจ", result: "มีทางเลือกมากกว่าหนึ่งทาง เลือกเส้นที่สอดคล้องกับคุณค่าของคุณ ไม่ใช่แค่ทางที่เร็วที่สุด", symbol: "ทาง", color: "#9f8c62", image: "card-images-web/card-48-ถนน.jpg" },
+      { id: 49, name: "ประตู", meaning: "โอกาสใหม่ การเปลี่ยนแปลง ทางเลือกสำคัญ", result: "ประตูใหม่กำลังเปิด แต่คุณต้องเป็นคนก้าวเข้าไปเอง เตรียมใจรับบทใหม่", symbol: "ประตู", color: "#8a5e3f", image: "card-images-web/card-49-ประตู.jpg" },
+      { id: 50, name: "ภูเขา", meaning: "อุปสรรคใหญ่ ความท้าทาย ต้องใช้ความพยายาม", result: "ยังมีด่านใหญ่ให้ผ่าน แต่อุปสรรคนี้ทำให้คุณแข็งแรงขึ้น วางแผนยาวและไม่ถอยง่าย", symbol: "ภู", color: "#6b6c73", image: "card-images-web/card-50-ภูเขา.jpg" },
+      { id: 51, name: "เมฆ", meaning: "ความไม่ชัดเจน ความสับสน ยังต้องรอ", result: "ยังไม่ควรรีบสรุป รอให้ข้อมูลชัดกว่านี้ก่อน คำตอบจะปรากฏเมื่อหมอกในใจจางลง", symbol: "เมฆ", color: "#717484", image: "card-images-web/card-51-เมฆ.jpg" },
+      { id: 52, name: "ฝน", meaning: "การชะล้าง ความเศร้า การเริ่มใหม่", result: "สิ่งที่หนักใจจะค่อย ๆ ถูกชะล้าง หลังผ่านช่วงเปียกปอน ใจจะสดใหม่กว่าเดิม", symbol: "ฝน", color: "#637f98", image: "card-images-web/card-52-ฝน.jpg" },
+      { id: 53, name: "สายฟ้า", meaning: "เหตุการณ์ฉับพลัน การเปลี่ยนแปลง กระทันหัน", result: "เตรียมรับข่าวหรือเหตุการณ์เร็ว ๆ นี้ การเปลี่ยนแปลงอาจแรงแต่ช่วยปลุกให้ตื่นจากความนิ่งเกินไป", symbol: "ฟ้า", color: "#8d68d1", image: "card-images-web/card-53-สายฟ้า.jpg" },
+      { id: 54, name: "พระพุทธเจ้า", meaning: "ความสงบ ปัญญา หลุดพ้น", result: "คำตอบสูงสุดคือสติและความปล่อยวาง เมื่อทำใจให้สงบ คุณจะเห็นว่าอะไรควรถือไว้และอะไรควรวางลง", symbol: "พุทธ", color: "#d7b05f", image: "card-images-web/card-54-พระพุทธเจ้า.jpg" }
+    ];
+
+
+    const cardInterpretations = {
+      37: {
+        title: "ความหมายหลักของไพ่ “ดาบ”",
+        core: "ดาบ = ต้องใช้สติและความเด็ดขาด ไพ่ใบนี้มักขึ้นมาเมื่อมีเรื่องที่ต้องเลือก ต้องตัดสินใจ หรือมีสถานการณ์ที่ทำให้ลังเล ไม่ชัดเจน และอาจมีความขัดแย้งเข้ามาเกี่ยวข้อง",
+        positive: [
+          "ได้เวลาตัดสินใจให้ชัด",
+          "ใช้เหตุผลมากกว่าอารมณ์",
+          "ตัดปัญหา ตัดคน ตัดความสัมพันธ์ หรือสิ่งที่ไม่จำเป็นออก",
+          "เหมาะกับการพูดตรง ๆ เคลียร์เรื่องค้างคา",
+          "มีโอกาสชนะ หากกล้าตัดสินใจอย่างมีสติ"
+        ],
+        caution: [
+          "ความขัดแย้งหรือการทะเลาะกัน",
+          "คำพูดแรง หรือพูดแล้วบาดใจ",
+          "ความคิดสับสน ลังเล ไม่เด็ดขาด",
+          "การตัดสินใจผิดเพราะใช้อารมณ์",
+          "ความสัมพันธ์อาจมีการตัดขาดหรือห่างกัน"
+        ],
+        love: "ความสัมพันธ์มีเรื่องต้องคุยให้ชัด อาจมีปัญหาจากคำพูด ความเข้าใจผิด หรือทิฐิ และอาจต้องตัดสินใจว่าจะไปต่อหรือพอแค่นี้ ถ้าคนโสด อาจยังไม่พร้อมเปิดใจ เพราะยังมีเรื่องเก่าหรือความคิดมาก คำแนะนำคืออย่าประชด อย่าพูดเพื่อเอาชนะ ให้พูดเพื่อหาความจริง",
+        work: "ต้องตัดสินใจเรื่องสำคัญ งานมีแรงกดดันหรือมีคนเห็นต่าง อาจต้องจัดการปัญหาแบบตรงไปตรงมา เหมาะกับงานที่ใช้เหตุผล วิเคราะห์ เอกสาร กฎหมาย การเจรจา และการแก้ปัญหา คำแนะนำคือใช้ข้อมูลจริง อย่าตัดสินใจจากอารมณ์หรือความกลัว",
+        money: "ต้องตัดรายจ่าย ระวังการตัดสินใจทางการเงินแบบหุนหัน อาจมีปัญหาเรื่องหนี้ เอกสาร สัญญา หรือการตกลงเงิน ควรตรวจรายละเอียดก่อนจ่ายหรือเซ็นอะไร",
+        summary: "ดาบ = ตัดสินใจ เคลียร์ปัญหา ใช้เหตุผล ระวังความขัดแย้ง ไพ่ใบนี้ไม่ใช่ไพ่ร้ายเสมอไป แต่บอกว่าอย่าหนีปัญหา ต้องกล้าตัดสินใจ และต้องตัดด้วยสติ ไม่ใช่อารมณ์"
+      }
+    };
+    const spreadLabels = ["อดีต", "ปัจจุบัน", "แนวโน้ม"];
+    const questionInput = document.querySelector("#questionInput");
+    const fullNameInput = document.querySelector("#fullNameInput");
+    const birthDateInput = document.querySelector("#birthDateInput");
+    const shuffleBtn = document.querySelector("#shuffleBtn");
+    const deckStage = document.querySelector("#deckStage");
+    const choiceGrid = document.querySelector("#choiceGrid");
+    const resultGrid = document.querySelector("#resultGrid");
+    const readingStatus = document.querySelector("#readingStatus");
+    const answerPanel = document.querySelector("#answerPanel");
+    const answerText = document.querySelector("#answerText");
+    const spreadButtons = document.querySelectorAll("[data-spread]");
+    const dreamTabs = document.querySelectorAll("[data-dream-tab]");
+    const dreamTopicText = document.querySelector("#dreamTopicText");
+    const dreamDatabaseCount = document.querySelector("#dreamDatabaseCount");
+    const dreamInput = document.querySelector("#dreamInput");
+    const dreamTimeInput = document.querySelector("#dreamTimeInput");
+    const dreamLunarInput = document.querySelector("#dreamLunarInput");
+    const dreamBtn = document.querySelector("#dreamBtn");
+    const dreamResult = document.querySelector("#dreamResult");
+
+    let selectedSpread = 1;
+    let selectableCards = [];
+    let chosenCards = [];
+    let isShuffling = false;
+
+
+    const dreamTopics = {
+      meaning: "ทำนายฝันใช้การอ่านสัญลักษณ์ที่เด่นที่สุดในฝัน เช่น คน สถานที่ สิ่งของ เหตุการณ์ และความรู้สึกหลังตื่น เพื่อแปลเป็นแนวโน้มด้านใจ งาน ความรัก หรือการตัดสินใจ",
+      cause: "เหตุแห่งความฝันอาจมาจากความคิดค้างคา สุขภาพ ความทรงจำ ความกังวล สิ่งที่พบก่อนนอน หรือความรู้สึกที่ยังไม่ได้จัดการ จึงควรอ่านฝันร่วมกับชีวิตจริงเสมอ",
+      time: "วันเวลาที่ฝันช่วยให้น้ำหนักคำทำนายต่างกัน ฝันที่จำได้ชัดหลังตื่นหรือใกล้รุ่งมักใช้เป็นสัญญาณให้ทบทวนมากกว่าฝันที่เลือนราง",
+      lunar: "วันขึ้นแรมใช้เป็นกรอบประกอบเชิงจังหวะ ข้างขึ้นเน้นการเริ่มต้น การเปิดทาง และการเติบโต ส่วนข้างแรมเน้นการปล่อยวาง เคลียร์ของเก่า และระวังเรื่องค้างคา",
+      numbers: "เลขจากฝันควรใช้เป็นเลขเชิงสัญลักษณ์เพื่อพิจารณาเท่านั้น ไม่ใช่การรับประกันโชคลาภ ระบบจะจับคำสำคัญในฝันแล้วเสนอเลขเด่น เลขคู่ และเลขกลับ",
+      remedy: "ฝันร้ายควรแก้ด้วยการตั้งสติ ทำใจให้สงบ สวดมนต์หรือแผ่เมตตาตามความเชื่อส่วนบุคคล และปรับพฤติกรรมก่อนนอน หากฝันซ้ำจนกระทบชีวิตควรดูแลสุขภาพใจร่วมด้วย"
+    };
+
+
+    const dreamLexicon = [
+      {
+        terms: ["จับปลา", "ได้จับปลา", "ตกปลา", "ปลา"],
+        title: "ฝันเกี่ยวกับปลา",
+        category: "ลาภผลและความก้าวหน้า",
+        meaning: "ปลาในตำราฝันไทยมักผูกกับลาภ ผลประโยชน์ โอกาสที่จับต้องได้ และความอุดมสมบูรณ์ หากฝันว่าได้จับปลา ให้มองว่าเป็นสัญญาณของงานหรือผลตอบแทนที่มีโอกาสดีขึ้น แต่ยังต้องลงมือคว้าโอกาสด้วยตัวเอง",
+        advice: "ถ้าเรื่องที่ถามเกี่ยวกับงานหรือเงิน ควรรีบจัดระบบและรับโอกาสที่เข้ามา ถ้าเกี่ยวกับความรัก ให้ดูว่าความสัมพันธ์มีสิ่งที่ต้องดูแลจริงจังมากขึ้นหรือไม่",
+        dominant: ["8"],
+        secondary: ["7"],
+        luckyNumbers: ["88", "78", "287", "878", "808"],
+        sourceType: "ปรับสำนวนจากคติทำนายฝันไทยและตัวอย่างคำค้นผู้ใช้"
+      },
+      {
+        terms: ["น้ำ", "ฝน", "ทะเล", "แม่น้ำ"],
+        title: "ฝันเห็นน้ำหรือฝน",
+        category: "อารมณ์และการเปลี่ยนผ่าน",
+        meaning: "น้ำหมายถึงอารมณ์ การชะล้าง และเรื่องที่กำลังเปลี่ยนรูป หากน้ำใสให้เน้นความราบรื่นและความโล่งใจ หากน้ำขุ่นให้ระวังเรื่องสับสนหรือคำพูดที่ยังไม่ชัด",
+        advice: "จัดใจให้สงบก่อนตัดสินใจ เรื่องที่ไหลแรงควรชะลอและดูทิศทางก่อนลงมือ",
+        dominant: ["2"],
+        secondary: ["5"],
+        luckyNumbers: ["25", "52", "205", "502"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      },
+      {
+        terms: ["บ้าน", "ห้อง", "ประตู"],
+        title: "ฝันเห็นบ้านหรือประตู",
+        category: "ครอบครัวและโอกาส",
+        meaning: "บ้านสื่อถึงฐานชีวิต ครอบครัว และความมั่นคง ส่วนประตูสื่อถึงทางเข้าออกหรือโอกาสใหม่ ความฝันนี้มักชวนให้กลับมาดูรากฐานก่อนขยับเรื่องใหญ่",
+        advice: "ตรวจความพร้อมของบ้าน งาน เงิน และคนใกล้ตัว หากมีทางเลือกใหม่ให้ดูว่าเปิดทางจริงหรือเป็นเพียงความคาดหวัง",
+        dominant: ["4"],
+        secondary: ["6"],
+        luckyNumbers: ["46", "64", "416", "614"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      },
+      {
+        terms: ["วัด", "พระ", "เทวดา", "ทำบุญ"],
+        title: "ฝันเห็นสิ่งศักดิ์สิทธิ์หรือสถานที่บุญ",
+        category: "ศรัทธาและการคุ้มครอง",
+        meaning: "ความฝันกลุ่มนี้เน้นการตั้งหลักทางใจ การคุ้มครอง และการกลับไปทำสิ่งที่ถูกต้อง เหมาะกับช่วงที่ต้องตัดสินใจด้วยศีลธรรมมากกว่าความอยาก",
+        advice: "ทำใจให้สงบ เคลียร์เรื่องค้างคา และเลือกทางที่ไม่ผิดหลักใจของตนเอง",
+        dominant: ["5"],
+        secondary: ["9"],
+        luckyNumbers: ["59", "95", "509", "905"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      },
+      {
+        terms: ["งู", "พญานาค", "มังกร"],
+        title: "ฝันเห็นงู พญานาค หรือสัตว์ใหญ่ลึกลับ",
+        category: "พลังลึกและความสัมพันธ์",
+        meaning: "สัญลักษณ์นี้มักโยงกับแรงดึงดูด ความสัมพันธ์ พลังที่ซ่อนอยู่ หรือเรื่องที่ต้องระวังอย่างมีสติ ยิ่งฝันชัดยิ่งควรดูบริบทว่าเป็นความเมตตาหรือความกดดัน",
+        advice: "อย่าตัดสินจากความรู้สึกเพียงอย่างเดียว ควรดูเจตนาและการกระทำจริงของคนที่เกี่ยวข้อง",
+        dominant: ["5"],
+        secondary: ["6"],
+        luckyNumbers: ["56", "65", "569", "659"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      }
+      ,
+      {
+        terms: ["ปลิง", "โดนปลิง", "ปลิงเกาะ", "ปลิงดูดเลือด"],
+        title: "ฝันเห็นปลิงหรือปลิงเกาะตัว",
+        category: "คนรบกวนและการสูญเสียพลัง",
+        meaning: "ปลิงในคติทำนายฝันมักสื่อถึงสิ่งที่มาเกาะเกี่ยว ใช้แรง ใช้ทรัพย์ หรือดึงพลังใจจากผู้ฝัน อาจเป็นคนที่พึ่งพาเรามากเกินไป หนี้สิน เรื่องค้างคา หรือความสัมพันธ์ที่ทำให้เหนื่อย",
+        advice: "ควรวางขอบเขตให้ชัด ตรวจเรื่องเงิน การยืม การค้ำประกัน และอย่าแบกรับปัญหาของผู้อื่นเกินกำลัง หากฝันว่าดึงปลิงออกได้ถือเป็นสัญญาณว่าปัญหาเริ่มคลี่คลาย",
+        dominant: ["6"],
+        secondary: ["4"],
+        luckyNumbers: ["64", "46", "604", "406", "664"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      },
+      {
+        terms: ["เงิน", "ธนบัตร", "เหรียญ", "เก็บเงิน", "ได้ทอง", "ทอง", "แหวน"],
+        title: "ฝันเห็นเงินทองหรือของมีค่า",
+        category: "ทรัพย์สินและคุณค่า",
+        meaning: "เงินทองในฝันหมายถึงคุณค่า โอกาส รายรับ หรือสิ่งสำคัญที่ต้องดูแล บางครั้งชี้ถึงทั้งลาภและภาระที่ตามมาพร้อมกัน",
+        advice: "ตรวจรายรับรายจ่ายให้รอบคอบ หากมีโอกาสทางเงินให้ดูเงื่อนไขและเอกสารก่อนตกลง",
+        dominant: ["8"],
+        secondary: ["9"],
+        luckyNumbers: ["89", "98", "289", "889", "998"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      },
+      {
+        terms: ["เด็ก", "ทารก", "ลูก", "อุ้มเด็ก", "คลอดลูก"],
+        title: "ฝันเห็นเด็กหรือทารก",
+        category: "การเริ่มต้นและสิ่งที่ต้องดูแล",
+        meaning: "เด็กหมายถึงการเริ่มต้น ความหวัง งานใหม่ ความสัมพันธ์ใหม่ หรือสิ่งที่ยังบอบบางและต้องการการดูแลอย่างใกล้ชิด",
+        advice: "เริ่มสิ่งใหม่ได้ แต่ต้องค่อยเป็นค่อยไป อย่าคาดหวังผลเร็วเกินจริง",
+        dominant: ["0"],
+        secondary: ["3"],
+        luckyNumbers: ["03", "30", "103", "301", "303"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      },
+      {
+        terms: ["คนตาย", "ศพ", "งานศพ", "โลงศพ", "ตาย"],
+        title: "ฝันเห็นคนตายหรือศพ",
+        category: "การจบสิ้นและการเปลี่ยนผ่าน",
+        meaning: "ความตายในฝันมักไม่ใช่ลางร้ายตรงตัว แต่หมายถึงการสิ้นสุดของช่วงหนึ่ง การปล่อยของเก่า หรือการเปลี่ยนบทบาทครั้งสำคัญ",
+        advice: "ควรเคลียร์เรื่องค้างคา ปิดบัญชีเก่า และเตรียมรับการเริ่มต้นใหม่อย่างมีสติ",
+        dominant: ["0"],
+        secondary: ["4"],
+        luckyNumbers: ["04", "40", "404", "044", "440"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      },
+      {
+        terms: ["รถ", "ขับรถ", "รถชน", "เดินทาง", "ถนน", "เรือ"],
+        title: "ฝันเกี่ยวกับรถหรือการเดินทาง",
+        category: "เส้นทางและการตัดสินใจ",
+        meaning: "ยานพาหนะและถนนหมายถึงทิศทางชีวิต การเดินหน้า การเปลี่ยนที่ หรือทางเลือกที่กำลังจะเกิดขึ้น หากรถติดหรือชนให้ระวังความเร่งรีบและแผนที่ยังไม่พร้อม",
+        advice: "วางแผนก่อนเดินหน้า ตรวจจังหวะ เวลา และคนร่วมทางให้ดี",
+        dominant: ["1"],
+        secondary: ["7"],
+        luckyNumbers: ["17", "71", "117", "711", "707"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      },
+      {
+        terms: ["ไฟ", "ไฟไหม้", "ควัน", "แสง", "พระอาทิตย์"],
+        title: "ฝันเห็นไฟหรือแสงแรง",
+        category: "พลังและเหตุเร่งด่วน",
+        meaning: "ไฟหมายถึงพลัง ความร้อนแรง การเปิดเผย หรือเหตุที่ต้องรีบจัดการ หากไฟสว่างกำลังดีคือพลังและโอกาส หากไฟไหม้รุนแรงให้ระวังความใจร้อนหรือเรื่องบานปลาย",
+        advice: "ใช้พลังอย่างมีทิศทาง อย่าปล่อยให้อารมณ์เร่งการตัดสินใจ",
+        dominant: ["1"],
+        secondary: ["9"],
+        luckyNumbers: ["19", "91", "119", "919", "901"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      },
+      {
+        terms: ["เลือด", "แผล", "เจ็บ", "ป่วย", "โรงพยาบาล"],
+        title: "ฝันเห็นเลือด แผล หรือการเจ็บป่วย",
+        category: "พลังชีวิตและคำเตือนเรื่องสุขภาพ",
+        meaning: "เลือดและแผลสื่อถึงพลังชีวิต ความเหนื่อยล้า เรื่องที่กระทบใจ หรือค่าใช้จ่ายที่อาจรั่วไหล บางครั้งเป็นสัญญาณให้กลับมาดูแลร่างกายและใจ",
+        advice: "พักผ่อน ตรวจสุขภาพ และระวังการใช้เงินหรือใช้แรงเกินตัว",
+        dominant: ["3"],
+        secondary: ["7"],
+        luckyNumbers: ["37", "73", "307", "733", "337"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      },
+      {
+        terms: ["ของหาย", "หาไม่เจอ", "กระเป๋าหาย", "โทรศัพท์หาย", "รองเท้าหาย"],
+        title: "ฝันว่าของหายหรือหาไม่เจอ",
+        category: "ความกังวลและสิ่งที่ต้องทบทวน",
+        meaning: "ของหายในฝันสะท้อนความกลัวเสียโอกาส ความไม่มั่นใจ หรือเรื่องที่รู้สึกควบคุมไม่ได้ อาจเตือนให้กลับมาตรวจรายละเอียดที่มองข้าม",
+        advice: "จัดระเบียบเอกสาร ข้าวของ ความสัมพันธ์ และแผนงาน อย่ารีบสรุปว่าทุกอย่างเสียหายก่อนตรวจให้ครบ",
+        dominant: ["0"],
+        secondary: ["5"],
+        luckyNumbers: ["05", "50", "150", "501", "505"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      },
+      {
+        terms: ["คนรัก", "แฟน", "แต่งงาน", "จูบ", "กอด", "คู่รัก"],
+        title: "ฝันเกี่ยวกับคนรักหรือการแต่งงาน",
+        category: "ความสัมพันธ์และความผูกพัน",
+        meaning: "คนรักหรือพิธีแต่งงานในฝันหมายถึงความสัมพันธ์ ข้อตกลง ความคาดหวัง และการตัดสินใจร่วมกัน อาจเป็นทั้งความสุขหรือแรงกดดันจากพันธะ",
+        advice: "คุยกันให้ชัดเรื่องความต้องการและขอบเขต อย่าปล่อยให้ความหวังแทนความจริง",
+        dominant: ["2"],
+        secondary: ["6"],
+        luckyNumbers: ["26", "62", "226", "626", "269"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      },
+      {
+        terms: ["แมว", "หมา", "สุนัข", "นก", "ไก่"],
+        title: "ฝันเห็นสัตว์เลี้ยงหรือสัตว์ใกล้ตัว",
+        category: "มิตรภาพและสัญชาตญาณ",
+        meaning: "สัตว์ใกล้ตัวมักสื่อถึงความไว้ใจ เพื่อน คนใกล้ชิด หรือสัญชาตญาณภายใน หากสัตว์เป็นมิตรหมายถึงแรงสนับสนุน หากกัดหรือไล่ตามให้ระวังปัญหาจากคนใกล้ตัว",
+        advice: "เลือกไว้ใจให้ถูกคน และฟังสัญชาตญาณเมื่อรู้สึกผิดปกติ",
+        dominant: ["4"],
+        secondary: ["9"],
+        luckyNumbers: ["49", "94", "449", "949", "904"],
+        sourceType: "คลังข้อมูลสำนวนใหม่จากคติสัญลักษณ์ไทย"
+      }    ];
+    const dreamSymbols = [
+      { keys: ["น้ำ", "ฝน", "ทะเล", "แม่น้ำ"], meaning: "อารมณ์ การชะล้าง และเรื่องที่กำลังไหลเปลี่ยน", numbers: ["2", "5", "25", "52"] },
+      { keys: ["บ้าน", "ห้อง", "ประตู"], meaning: "ครอบครัว ฐานชีวิต พื้นที่ส่วนตัว หรือโอกาสใหม่", numbers: ["4", "6", "46", "64"] },
+      { keys: ["เงิน", "ทอง", "แหวน", "ของมีค่า"], meaning: "คุณค่า โอกาส รายได้ หรือสิ่งที่ต้องรักษา", numbers: ["8", "9", "89", "98"] },
+      { keys: ["วัด", "พระ", "เทวดา", "ทำบุญ"], meaning: "ศรัทธา การคุ้มครอง ความสงบ และการตั้งหลักทางใจ", numbers: ["5", "9", "59", "95"] },
+      { keys: ["งู", "พญานาค", "มังกร"], meaning: "พลังลึก ความสัมพันธ์ เสน่ห์ หรือเรื่องที่ต้องระวังอย่างมีสติ", numbers: ["5", "6", "56", "65"] },
+      { keys: ["เดินทาง", "รถ", "เรือ", "ถนน"], meaning: "การเคลื่อนไหว ทางเลือก การเปลี่ยนที่ หรือจังหวะใหม่", numbers: ["1", "7", "17", "71"] },
+      { keys: ["เด็ก", "ทารก", "ลูก"], meaning: "การเริ่มต้นใหม่ ความหวัง หรือสิ่งที่ยังต้องดูแล", numbers: ["0", "3", "03", "30"] },
+      { keys: ["คนรัก", "แฟน", "แต่งงาน", "คู่"], meaning: "ความสัมพันธ์ ความผูกพัน และเรื่องที่ต้องพูดให้ชัด", numbers: ["2", "6", "26", "62"] },
+      { keys: ["ตาย", "ศพ", "งานศพ"], meaning: "การจบช่วงเก่า การเปลี่ยนผ่าน หรือการปล่อยสิ่งที่หมดเวลา", numbers: ["0", "4", "04", "40"] },
+      { keys: ["ไฟ", "แสง", "พระอาทิตย์"], meaning: "พลัง ความเร่ง การเปิดเผย หรือความเด่นชัด", numbers: ["1", "9", "19", "91"] }
+    ];
+
+    function setDreamTopic(tabKey) {
+      dreamTabs.forEach((button) => button.classList.toggle("active", button.dataset.dreamTab === tabKey));
+      dreamTopicText.textContent = dreamTopics[tabKey] || dreamTopics.meaning;
+    }
+
+    function getDreamTimeNote(value) {
+      if (value === "ใกล้รุ่ง" || value === "หลังตื่นแล้วจำได้ชัด") return "ฝันนี้มีน้ำหนักด้านการเตือนใจมากขึ้น เพราะเป็นช่วงที่ผู้ฝันจำรายละเอียดได้ชัด ควรใช้ทบทวนการตัดสินใจในปัจจุบัน";
+      if (value === "หัวค่ำ") return "ฝันช่วงหัวค่ำมักเกี่ยวกับเรื่องที่คิดค้างหรือสิ่งที่พบในวันนั้น ควรแยกความกังวลออกจากสัญญาณที่สำคัญ";
+      if (value === "กลางคืน") return "ฝันกลางคืนให้อ่านเป็นภาพรวมของอารมณ์และเรื่องที่กำลังสะสม ควรดูสัญลักษณ์ที่เด่นที่สุดเป็นหลัก";
+      return "ไม่ได้ระบุเวลาฝัน ระบบจึงอ่านจากสัญลักษณ์ในความฝันเป็นหลัก";
+    }
+
+    function getDreamLunarNote(value) {
+      if (value.includes("ขึ้น")) return `${value} ให้น้ำหนักเรื่องการเริ่มต้น การขยับขยาย และโอกาสที่ค่อย ๆ เปิดขึ้น`;
+      if (value.includes("แรม")) return `${value} ให้น้ำหนักเรื่องการเคลียร์ของเก่า การปล่อยวาง และการระวังเรื่องค้างคา`;
+      return "ไม่ได้ระบุวันขึ้นแรม จึงยังไม่ถ่วงน้ำหนักด้านจังหวะจันทรคติ";
+    }
+
+    function getFallbackDreamNumbers(text) {
+      const cleanLength = text.replace(/\s/g, "").length || 7;
+      const first = cleanLength % 10;
+      const second = (cleanLength * 3 + 1) % 10;
+      return [`${first}`, `${second}`, `${first}${second}`, `${second}${first}`];
+    }
+
+    function interpretDream() {
+      const text = dreamInput.value.trim();
+      const time = dreamTimeInput.value;
+      const lunar = dreamLunarInput.value;
+      const lexiconMatches = dreamLexicon.filter((item) => item.terms.some((term) => text.includes(term)));
+      const symbolMatches = dreamSymbols.filter((item) => item.keys.some((key) => text.includes(key)));
+      const fallback = [{ meaning: "ความฝันนี้ยังไม่พบสัญลักษณ์เฉพาะในฐานข้อมูลเบื้องต้น จึงอ่านจากภาพรวมและความรู้สึกหลังตื่นเป็นหลัก", numbers: getFallbackDreamNumbers(text) }];
+      const activeSymbols = symbolMatches.length ? symbolMatches : fallback;
+      const dreamText = text ? escapeHtml(text) : "ยังไม่ได้เล่าความฝันโดยละเอียด";
+      const lexiconHtml = lexiconMatches.map((item) => `
+        <div class="summary-block">
+          <h3>${escapeHtml(item.title)}</h3>
+          <p><strong>หมวด:</strong> ${escapeHtml(item.category)}</p>
+          <p>${escapeHtml(item.meaning)}</p>
+          <p><strong>คำแนะนำ:</strong> ${escapeHtml(item.advice)}</p>
+          <p><strong>เลขเด่น:</strong> ${item.dominant.map(escapeHtml).join(" , ")} <strong>เลขรอง:</strong> ${item.secondary.map(escapeHtml).join(" , ")}</p>
+          <p><strong>เลขนำโชค:</strong> ${item.luckyNumbers.map(escapeHtml).join(" , ")}</p>
+          <p><small>${escapeHtml(item.sourceType)}</small></p>
+        </div>
+      `).join("");
+      const symbolMeanings = activeSymbols.map((item) => `<li>${escapeHtml(item.meaning)}</li>`).join("");
+      const symbolNumbers = [...new Set(activeSymbols.flatMap((item) => item.numbers))].slice(0, 8);
+      const lexiconNumbers = [...new Set(lexiconMatches.flatMap((item) => [...item.dominant, ...item.secondary, ...item.luckyNumbers]))];
+      const numbers = lexiconNumbers.length ? lexiconNumbers : symbolNumbers;
+      dreamResult.innerHTML = `
+        <h3>ผลทำนายฝันเบื้องต้น</h3>
+        <p><strong>ความฝัน:</strong> ${dreamText}</p>
+        ${lexiconHtml || `<ul>${symbolMeanings}</ul>`}
+        <p><strong>ช่วงเวลาฝัน:</strong> ${escapeHtml(getDreamTimeNote(time))}</p>
+        <p><strong>วันขึ้นแรม:</strong> ${escapeHtml(getDreamLunarNote(lunar))}</p>
+        <p><strong>เลขเชิงสัญลักษณ์จากฝัน:</strong> ${numbers.map(escapeHtml).join(" , ")}</p>
+        <p>คำทำนายฝันและเลขจากฝันเป็นแนวทางเพื่อการพิจารณาเท่านั้น ไม่ใช่ข้อยืนยันผลลัพธ์หรือโชคลาภในอนาคต</p>
+      `;
+      dreamResult.classList.add("visible");
+    }
+
+    dreamTabs.forEach((button) => {
+      button.addEventListener("click", () => setDreamTopic(button.dataset.dreamTab));
+    });
+
+    dreamBtn.addEventListener("click", interpretDream);
+    dreamDatabaseCount.textContent = `คลังข้อมูลทำนายฝันขณะนี้มี ${dreamLexicon.length} รายการหลัก และคำค้นใกล้เคียง ${dreamLexicon.reduce((total, item) => total + item.terms.length, 0)} คำ`;
+    setDreamTopic("meaning");
+        spreadButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedSpread = Number(button.dataset.spread);
+        spreadButtons.forEach((item) => {
+          const active = item === button;
+          item.classList.toggle("active", active);
+          item.setAttribute("aria-pressed", String(active));
+        });
+        resetReading(true);
+      });
+    });
+
+    shuffleBtn.addEventListener("click", () => {
+      if (isShuffling) return;
+      startShuffle();
+    });
+
+    function startShuffle() {
+      resetReading(false);
+      isShuffling = true;
+      shuffleBtn.disabled = true;
+      deckStage.classList.remove("hidden");
+      deckStage.classList.add("shuffling");
+      readingStatus.textContent = "กำลังสับไพ่ ตั้งจิตถึงคำถามของคุณ...";
+
+      window.setTimeout(() => {
+        selectableCards = shuffle([...oracleCards]);
+        chosenCards = [];
+        isShuffling = false;
+        shuffleBtn.disabled = false;
+        deckStage.classList.remove("shuffling");
+        deckStage.classList.add("hidden");
+        renderChoices();
+        readingStatus.textContent = selectedSpread === 1 ? "สับไพ่แล้ว แสดงไพ่คว่ำครบ 54 ใบ เลือกไพ่ 1 ใบ" : "สับไพ่แล้ว แสดงไพ่คว่ำครบ 54 ใบ เลือกไพ่ 3 ใบ สำหรับ อดีต / ปัจจุบัน / แนวโน้ม";
+      }, 1050);
+    }
+
+    function renderChoices() {
+      choiceGrid.innerHTML = "";
+      choiceGrid.classList.remove("hidden");
+      selectableCards.forEach((card, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "choice-card";
+        button.setAttribute("data-testid", "oracle-card");
+        button.setAttribute("aria-label", `เลือกไพ่ใบที่ ${index + 1}`);
+        button.innerHTML = `
+          <span class="card-inner">
+            <span class="card-face card-back">
+              <span class="sigil">๛</span>
+              <span>ใบที่ ${index + 1}</span>
+            </span>
+            <span class="card-face card-front compact-front">
+              <div class="card-art">
+                ${renderCardImage(card)}
+              </div>
+              <span class="card-number">ไพ่ใบที่ ${card.id}</span>
+              <h3 class="card-name">${card.name}</h3>
+            </span>
+          </span>
+        `;
+        button.addEventListener("click", () => selectCard(card, button));
+        choiceGrid.appendChild(button);
+      });
+    }
+
+    function selectCard(card, button) {
+      if (button.classList.contains("selected") || chosenCards.length >= selectedSpread) return;
+      chosenCards.push(card);
+      button.classList.add("selected");
+      button.disabled = true;
+      readingStatus.textContent = selectedSpread === 1
+        ? "กำลังเปิดคำทำนาย..."
+        : `เลือกแล้ว ${chosenCards.length} จาก ${selectedSpread} ใบ`;
+
+      if (chosenCards.length === selectedSpread) {
+        [...choiceGrid.querySelectorAll(".choice-card")].forEach((item) => item.disabled = true);
+        window.setTimeout(showReading, 520);
+      }
+    }
+
+
+    function createCardArtwork(card) {
+      const color = card.color || "#d9ad52";
+      const symbol = card.symbol || "๛";
+      return `
+        <svg class="card-illustration" viewBox="0 0 240 356" role="img" aria-label="ภาพประกอบ ${card.name}">
+          <defs>
+            <radialGradient id="aura-${card.id}" cx="50%" cy="38%" r="62%">
+              <stop offset="0" stop-color="#fff1ad" stop-opacity="0.95"></stop>
+              <stop offset="0.48" stop-color="${color}" stop-opacity="0.82"></stop>
+              <stop offset="1" stop-color="#110817" stop-opacity="1"></stop>
+            </radialGradient>
+            <linearGradient id="silk-${card.id}" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0" stop-color="#fff7dc" stop-opacity="0.94"></stop>
+              <stop offset="0.52" stop-color="${color}" stop-opacity="0.76"></stop>
+              <stop offset="1" stop-color="#43205d" stop-opacity="0.86"></stop>
+            </linearGradient>
+          </defs>
+          <rect width="240" height="356" rx="18" fill="#0b0610"></rect>
+          <rect x="14" y="14" width="212" height="328" rx="14" fill="url(#aura-${card.id})" stroke="#f8da8a" stroke-opacity="0.62"></rect>
+          <path d="M120 42 C150 92 190 108 202 166 C164 154 139 166 120 204 C101 166 76 154 38 166 C50 108 90 92 120 42Z" fill="url(#silk-${card.id})" opacity="0.9"></path>
+          <circle cx="120" cy="156" r="54" fill="#140b17" fill-opacity="0.82" stroke="#f8da8a" stroke-width="3"></circle>
+          <circle cx="120" cy="156" r="76" fill="none" stroke="#fff7dc" stroke-opacity="0.26" stroke-width="2"></circle>
+          <path d="M64 254 C88 226 104 226 120 254 C136 226 152 226 176 254 C156 268 136 276 120 294 C104 276 84 268 64 254Z" fill="${color}" opacity="0.86"></path>
+          <text x="120" y="171" text-anchor="middle" fill="#fff7dc" font-size="34" font-weight="700" font-family="Charm, Charmonman, Noto Serif Thai, Angsana New, Browallia New, serif">${symbol}</text>
+          <text x="120" y="322" text-anchor="middle" fill="#fff7dc" font-size="15" font-weight="700" font-family="Charm, Charmonman, Noto Serif Thai, Angsana New, Browallia New, serif">${card.name}</text>
+        </svg>
+      `;
+    }
+    function renderCardImage(card) {
+      const fallback = createCardArtwork(card);
+      if (!card.image) return fallback;
+      return `<img src="${escapeHtml(card.image)}" alt="${escapeHtml(card.name)}" onerror="this.style.display='none'">${fallback}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[char]));
+    }
+
+    function listItems(items) {
+      return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+    }
+
+    function renderGenericInterpretation(card) {
+      const meaning = escapeHtml(card.meaning);
+      const result = escapeHtml(card.result);
+      const name = escapeHtml(card.name);
+
+      return `
+        <div class="reading-detail">
+          <section><h4>ความหมายหลักของไพ่ “${name}”</h4><p>${meaning}</p></section>
+          <section><h4>ภาพรวมของคำตอบ</h4><p>${result} ไพ่ใบนี้ให้มองเหตุการณ์ตามความจริงและใช้ความหมายหลักของไพ่เป็นแกนในการตัดสินใจ ไม่ควรรีบสรุปจากความกลัวหรือความคาดหวังเพียงด้านเดียว</p></section>
+          <section><h4>ด้านบวก</h4>${listItems([
+            `มีจุดเด่นเกี่ยวกับ ${card.meaning} และอาจเปิดโอกาสให้สถานการณ์ขยับไปในทางที่เหมาะสม`,
+            "ถ้าตั้งสติและเลือกทำในสิ่งที่ถูกต้อง ไพ่ใบนี้ช่วยชี้ทางให้เห็นจังหวะที่ควรเดินต่อ",
+            "เหมาะกับการทบทวนเป้าหมาย พูดคุยให้ชัด หรือจัดลำดับความสำคัญของเรื่องที่ถาม"
+          ])}</section>
+          <section><h4>ด้านลบ / ข้อควรระวัง</h4>${listItems([
+            "ระวังการตีความเร็วเกินไป หรือปล่อยให้อารมณ์ช่วงสั้น ๆ นำการตัดสินใจ",
+            "เรื่องนี้อาจมีรายละเอียดที่ยังไม่เห็นครบ ควรตรวจข้อมูล คนที่เกี่ยวข้อง และเงื่อนไขให้รอบคอบ",
+            "ถ้าฝืนจังหวะมากเกินไป ผลลัพธ์อาจไม่ราบรื่นเท่าที่ควร"
+          ])}</section>
+          <section><h4>ถ้าถามเรื่องความรัก</h4><p>ให้ดูว่า ${name} สะท้อนความสัมพันธ์ด้านใด หากเป็นเรื่องคู่ ควรคุยกันด้วยเหตุผลและความจริงใจ ถ้าเป็นคนโสด ไพ่ใบนี้แนะนำให้ทบทวนว่าคุณพร้อมเปิดใจแค่ไหน และอย่าเร่งคำตอบเกินจังหวะของตัวเอง</p></section>
+          <section><h4>ถ้าถามเรื่องงาน</h4><p>เรื่องงานควรใช้ความหมายของไพ่เป็นแนวทางหลัก: ${meaning} จึงเหมาะกับการวางแผน เคลียร์หน้าที่ และตัดสินใจบนข้อมูลจริง หากมีแรงกดดัน ให้ค่อย ๆ แยกปัญหาออกเป็นส่วน ๆ แล้วจัดการทีละเรื่อง</p></section>
+          <section><h4>ถ้าถามเรื่องการเงิน</h4><p>การเงินต้องดูทั้งโอกาสและความเสี่ยง ไพ่ใบนี้ไม่ได้ให้รีบเสี่ยง แต่แนะนำให้ตรวจรายรับรายจ่าย เอกสาร ข้อตกลง และความจำเป็นก่อนตัดสินใจ ใช้ความหมายของไพ่เป็นสัญญาณประกอบ ไม่ใช่คำยืนยันผลลัพธ์แน่นอน</p></section>
+          <section><h4>คำแนะนำ</h4><p>${result} สรุปคือให้ใช้ไพ่ใบนี้เป็นกระจกสะท้อนสถานการณ์ แล้วเลือกทางที่ทำให้ใจนิ่งขึ้น ชัดขึ้น และรับผิดชอบต่อผลที่ตามมาได้</p></section>
+        </div>
+      `;
+    }
+
+    function renderCardInterpretation(card) {
+      const detail = cardInterpretations[card.id];
+      if (!detail) return renderGenericInterpretation(card);
+
+      return `
+        <div class="reading-detail">
+          <section><h4>${escapeHtml(detail.title)}</h4><p>${escapeHtml(detail.core)}</p></section>
+          <section><h4>ด้านบวก</h4>${listItems(detail.positive)}</section>
+          <section><h4>ด้านลบ / ข้อควรระวัง</h4>${listItems(detail.caution)}</section>
+          <section><h4>ถ้าถามเรื่องความรัก</h4><p>${escapeHtml(detail.love)}</p></section>
+          <section><h4>ถ้าถามเรื่องงาน</h4><p>${escapeHtml(detail.work)}</p></section>
+          <section><h4>ถ้าถามเรื่องการเงิน</h4><p>${escapeHtml(detail.money)}</p></section>
+          <section><h4>สรุปสั้น ๆ</h4><p>${escapeHtml(detail.summary)}</p></section>
+        </div>
+      `;
+    }
+    function showReading() {
+      choiceGrid.classList.add("hidden");
+      resultGrid.innerHTML = "";
+      resultGrid.className = selectedSpread === 1 ? "result-grid one-card" : "result-grid";
+      resultGrid.classList.remove("hidden");
+
+      chosenCards.forEach((card, index) => {
+        const article = document.createElement("article");
+        article.className = "reading-card detailed-reading-card";
+        article.style.setProperty("--art", card.color || "#d9ad52");
+        const label = selectedSpread === 1 ? "คำตอบ" : spreadLabels[index];
+        article.innerHTML = `
+          <div class="card-inner">
+            <div class="card-face card-back">
+              <span class="sigil">๛</span>
+              <span>พรหมญาณ</span>
+            </div>
+            <div class="card-face card-front">
+              <span class="spread-label">${label}</span>
+              <div class="card-art">
+                ${renderCardImage(card)}
+              </div>
+              <span class="card-number">ไพ่ใบที่ ${card.id}</span>
+              <h3 class="card-name">${card.name}</h3>
+              ${renderCardInterpretation(card)}
+            </div>
+          </div>
+        `;
+        resultGrid.appendChild(article);
+        window.setTimeout(() => article.classList.add("revealed"), 90 + index * 180);
+      });
+
+      answerText.innerHTML = buildSummary();
+      answerPanel.classList.add("visible");
+      readingStatus.innerHTML = `<button type="button" class="reset-btn" id="resetBtn">เริ่มเปิดไพ่ใหม่</button>`;
+      document.querySelector("#resetBtn").addEventListener("click", () => resetReading(true));
+    }
+
+    function parseBirthDate(value) {
+      const raw = value.trim();
+      if (!raw) return null;
+      const parts = raw.replace(/[.\-\s]+/g, "/").split("/").map((part) => Number(part));
+      if (parts.length !== 3 || parts.some((part) => !Number.isFinite(part))) {
+        return { error: "กรุณาใส่วันเกิดเป็นรูปแบบ วัน/เดือน/ปี เช่น 12/08/2535" };
+      }
+      let [day, month, year] = parts;
+      const displayYear = year;
+      if (year > 2400) year -= 543;
+      const date = new Date(year, month - 1, day);
+      if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+        return { error: "วันเดือนปีเกิดไม่ถูกต้อง กรุณาตรวจอีกครั้ง" };
+      }
+      return { date, day, month, year, displayYear };
+    }
+
+    function getThaiAstroProfile(birthText) {
+      const parsed = parseBirthDate(birthText);
+      if (!parsed || parsed.error) return parsed;
+      const profiles = [
+        { weekday: "อาทิตย์", planet: "พระอาทิตย์", strength: 6, element: "ไฟ", tone: "พลังผู้นำ ความกล้า และการแสดงตัวตน", advice: "ตัดสินใจได้ดีเมื่อเป้าหมายชัดและไม่ใช้อัตตานำ" },
+        { weekday: "จันทร์", planet: "พระจันทร์", strength: 15, element: "น้ำ", tone: "ความรู้สึก เมตตา และการปรับตัว", advice: "ฟังใจตัวเองได้ แต่ควรแยกความกลัวออกจากสัญชาตญาณ" },
+        { weekday: "อังคาร", planet: "พระอังคาร", strength: 8, element: "ไฟ", tone: "แรงผลักดัน การต่อสู้ และความเด็ดขาด", advice: "เหมาะกับการลงมือ แต่ต้องระวังความใจร้อน" },
+        { weekday: "พุธ", planet: "พระพุธ", strength: 17, element: "ลม", tone: "คำพูด การค้า ความคิด และการเจรจา", advice: "ข้อมูลที่ชัดและการคุยให้ตรงประเด็นจะช่วยเปิดทาง" },
+        { weekday: "พฤหัสบดี", planet: "พระพฤหัสบดี", strength: 19, element: "ดิน", tone: "ปัญญา ครู ผู้ใหญ่ และหลักธรรม", advice: "ควรถามผู้รู้ ตรวจหลักการ และเลือกทางที่ถูกต้องระยะยาว" },
+        { weekday: "ศุกร์", planet: "พระศุกร์", strength: 21, element: "น้ำ", tone: "เสน่ห์ ความรัก ศิลปะ และความสุข", advice: "ตัดสินใจด้วยคุณค่าในใจ แต่ต้องไม่หลงความสบายจนมองข้ามข้อเท็จจริง" },
+        { weekday: "เสาร์", planet: "พระเสาร์", strength: 10, element: "ดิน", tone: "ความอดทน ภาระ หน้าที่ และบทเรียน", advice: "เรื่องสำคัญต้องค่อยเป็นค่อยไป วางแผนให้หนักแน่นก่อนขยับ" }
+      ];
+      return { ...parsed, ...profiles[parsed.date.getDay()] };
+    }
+
+    function renderAstroContext(profile) {
+      if (!profile) {
+        return `<div class="summary-block"><h3>ข้อมูลวันเกิด</h3><p>หากใส่วันเดือนปีเกิด ระบบจะอ่านประกอบด้วยกรอบโหราศาสตร์ไทยพื้นฐาน เช่น วันเกิด ดาวประจำวัน และกำลังวัน เพื่อช่วยให้คำทำนายรวมเฉพาะตัวขึ้น</p></div>`;
+      }
+      if (profile.error) {
+        return `<div class="summary-block"><h3>ข้อมูลวันเกิด</h3><p>${escapeHtml(profile.error)} คำทำนายครั้งนี้จึงอ่านจากไพ่และคำถามเป็นหลัก</p></div>`;
+      }
+      return `<div class="summary-block"><h3>แนวโหราศาสตร์ไทยจากวันเกิด</h3><p>อ้างอิงกรอบโหราศาสตร์ไทยพื้นฐานจากวันเกิด ผู้ถามเกิดวัน${profile.weekday} มีดาวประจำวันคือ ${profile.planet} กำลังวัน ${profile.strength} และพลังเชิงธาตุ ${profile.element}</p><p>น้ำหนักดวงเดิมเด่นเรื่อง ${profile.tone} ดังนั้นคำถามนี้ควรพิจารณาจากทั้งไพ่ที่เปิดได้และธรรมชาติประจำวันเกิดร่วมกัน: ${profile.advice}</p></div>`;
+    }
+
+    function isDecisionQuestion(question) {
+      return /ควร|หรือไม่|ดีไหม|ดีมั้ย|ไหม|มั้ย|เลือก|ตัดสินใจ|ทำสิ่งนี้|ทำแบบนี้/.test(question);
+    }
+
+    function renderPrivacySummary(fullName, birthText) {
+      const name = fullName ? `ผู้ถาม: ${escapeHtml(fullName)}` : "ยังไม่ได้ระบุชื่อผู้ถาม";
+      const birth = birthText ? `วันเดือนปีเกิดที่ใช้ประกอบ: ${escapeHtml(birthText)}` : "ยังไม่ได้ระบุวันเดือนปีเกิด";
+      return `<div class="summary-block"><h3>ข้อมูลผู้ถาม</h3><p>${name}</p><p>${birth}</p><p><strong>ข้อมูลนี้จะไม่อยู่ในระบบ ไม่มีการเก็บบันทึกใดๆ</strong> การอ่านนี้ประมวลผลบนหน้าเว็บขณะใช้งานเท่านั้น</p></div>`;
+    }
+
+    function renderOneCardSummary(card, detail, question, profile) {
+      const keyMessage = detail ? detail.summary : card.result;
+      const decisionMode = isDecisionQuestion(question);
+      const decisionText = decisionMode
+        ? `เพราะคำถามมีลักษณะถามว่า “ควรทำหรือไม่” ไพ่ ${escapeHtml(card.name)} จึงไม่ได้ตอบแบบใช่หรือไม่ใช่ทันที แต่ให้ดูเงื่อนไขก่อนลงมือ หากสิ่งนั้นสอดคล้องกับ ${escapeHtml(card.meaning)} และคุณรับผลที่ตามมาได้ คำตอบจะเอนไปทาง “ทำได้ แต่ต้องทำอย่างมีสติและมีแผน” หากยังไม่ชัด ควรชะลอเพื่อเก็บข้อมูลเพิ่มก่อนตัดสินใจ`
+        : `คำถามนี้ควรอ่านเป็นแนวโน้มและทิศทาง ไพ่ ${escapeHtml(card.name)} ชี้ให้ดูแกนหลักคือ ${escapeHtml(card.meaning)} แล้วค่อยเทียบกับสถานการณ์จริงที่กำลังเกิดขึ้น`;
+      const astroAdvice = profile && !profile.error
+        ? `เมื่อเทียบกับพื้นดวงวัน${profile.weekday} พลัง ${profile.planet} ทำให้คำตอบนี้ควรใช้วิธี ${escapeHtml(profile.advice)} ไพ่จึงเหมือนย้ำให้คุณเลือกทางที่ไม่ขัดกับธรรมชาติของตัวเอง`
+        : "หากต้องการให้คำอ่านเฉพาะตัวขึ้น สามารถใส่วันเดือนปีเกิดเพื่อให้ระบบอ่านประกอบวันเกิด ดาวประจำวัน และกำลังวัน";
+
+      return `
+        <div class="summary-block"><h3>คำตอบหลักจากไพ่</h3><p><strong>ไพ่ ${escapeHtml(card.name)}</strong> มีแกนความหมายคือ ${escapeHtml(card.meaning)}</p><p>${escapeHtml(keyMessage)}</p></div>
+        <div class="summary-block"><h3>วิเคราะห์คำถาม</h3><p>${decisionText}</p><p>${astroAdvice}</p></div>
+        <div class="summary-block"><h3>ข้อควรระวังและแนวทางปฏิบัติ</h3><ul><li>อย่าใช้คำทำนายแทนข้อมูลจริง เอกสาร สัญญา หรือคำปรึกษาจากผู้รู้ในเรื่องสำคัญ</li><li>ถ้าเรื่องนี้เกี่ยวกับคนอื่น ให้ดูการกระทำจริงมากกว่าคำพูดหรือความคาดหวัง</li><li>หากใจยังร้อนหรือกังวลมาก ควรรอให้ใจนิ่งก่อนค่อยตัดสินใจขั้นสุดท้าย</li></ul></div>
+        <div class="summary-block"><h3>สรุปการตัดสินใจ</h3><p>คำทำนายนี้เอนไปทางให้คุณใช้ไพ่เป็นเข็มทิศ ไม่ใช่คำสั่งตายตัว ถ้าทางเลือกนั้นทำให้คุณชัดขึ้น รับผิดชอบได้ และไม่ฝืนข้อเท็จจริง ก็สามารถเดินหน้าอย่างระมัดระวังได้ แต่ถ้ายังเต็มไปด้วยความคลุมเครือ ให้ชะลอและหาหลักฐานเพิ่มก่อน</p></div>`;
+    }
+
+    function renderThreeCardSummary(question, profile) {
+      const parts = chosenCards.map((card, index) => `<p><strong>${escapeHtml(spreadLabels[index])}</strong> คือ ${escapeHtml(card.name)}: ${escapeHtml(card.result)} แกนของไพ่คือ ${escapeHtml(card.meaning)}</p>`).join("");
+      const [past, present, future] = chosenCards;
+      const astroAdvice = profile && !profile.error
+        ? `เมื่อประกอบกับวัน${profile.weekday} ดาว ${profile.planet} และกำลังวัน ${profile.strength} แนวทางที่เหมาะคือ ${escapeHtml(profile.advice)} ให้ใช้พลังเด่นเรื่อง ${escapeHtml(profile.tone)} ช่วยประคองการตัดสินใจ`
+        : "หากระบุวันเกิด ระบบจะช่วยอ่านร่วมกับวันเกิด ดาวประจำวัน และกำลังวันให้เฉพาะตัวมากขึ้น";
+      const decisionText = isDecisionQuestion(question)
+        ? `สำหรับคำถามที่ถามว่าควรทำหรือไม่ ให้ดูสามใบเป็นลำดับเหตุผล: อดีตคือสิ่งที่พาคุณมาถึงจุดนี้ ปัจจุบันคือเงื่อนไขที่ต้องจัดการ และแนวโน้มคือผลที่ควรเตรียมรับ หากไพ่ปัจจุบันและแนวโน้มไปทิศเดียวกัน สามารถเดินต่อได้ แต่ถ้าขัดกันมากควรชะลอเพื่อปรับแผนก่อน`
+        : `สามใบนี้ควรอ่านเป็นเส้นทางของเหตุการณ์ ไม่ใช่แค่ผลลัพธ์ปลายทาง ให้ดูว่าสิ่งเดิมกำลังส่งผลต่อปัจจุบันอย่างไร และแนวโน้มกำลังชวนให้คุณวางตัวแบบไหน`;
+      return `
+        <div class="summary-block"><h3>ภาพรวมสามใบ</h3>${parts}</div>
+        <div class="summary-block"><h3>การเชื่อมโยงของคำทำนาย</h3><p>จากอดีต <strong>${escapeHtml(past.name)}</strong> มาสู่ปัจจุบัน <strong>${escapeHtml(present.name)}</strong> แล้วไปยังแนวโน้ม <strong>${escapeHtml(future.name)}</strong> ภาพรวมบอกว่าเรื่องนี้มีทั้งรากเดิม เงื่อนไขปัจจุบัน และผลลัพธ์ที่ต้องเตรียมรับ ไม่ควรมองแค่ใบสุดท้ายใบเดียว</p><p>${decisionText}</p></div>
+        <div class="summary-block"><h3>ประกอบดวงวันเกิด</h3><p>${astroAdvice}</p></div>
+        <div class="summary-block"><h3>คำแนะนำรวม</h3><ul><li>เริ่มจากแก้เงื่อนไขของไพ่ปัจจุบันก่อน เพราะเป็นจุดที่คุณควบคุมได้มากที่สุด</li><li>ใช้ไพ่แนวโน้มเป็นคำเตือนล่วงหน้า ว่าควรเสริมอะไรหรือหลีกเลี่ยงอะไร</li><li>ถ้าเรื่องเดิมยังไม่เปลี่ยน ควรรอ 7 วันหรือรอเหตุการณ์ใหม่ก่อนเปิดซ้ำ เพื่อไม่ให้คำตอบวนตามอารมณ์</li></ul></div>`;
+    }
+
+    function buildSummary() {
+      const question = questionInput.value.trim();
+      const fullName = fullNameInput.value.trim();
+      const birthText = birthDateInput.value.trim();
+      const profile = getThaiAstroProfile(birthText);
+      const prefix = question ? `<div class="summary-block"><h3>คำถาม</h3><p>${escapeHtml(`สำหรับคำถาม “${question}”`)}</p></div>` : `<div class="summary-block"><h3>คำถาม</h3><p>ยังไม่ได้ระบุคำถาม ระบบจึงอ่านเป็นแนวโน้มทั่วไปจากไพ่ที่เปิดได้</p></div>`;
+      const profileBlocks = `${renderPrivacySummary(fullName, birthText)}${renderAstroContext(profile)}`;
+
+      if (selectedSpread === 1) {
+        const card = chosenCards[0];
+        const detail = cardInterpretations[card.id];
+        return `${prefix}${profileBlocks}${renderOneCardSummary(card, detail, question, profile)}`;
+      }
+
+      return `${prefix}${profileBlocks}${renderThreeCardSummary(question, profile)}`;
+    }
+    function resetReading(showDeck) {
+      choiceGrid.innerHTML = "";
+      resultGrid.innerHTML = "";
+      choiceGrid.classList.add("hidden");
+      resultGrid.classList.add("hidden");
+      answerPanel.classList.remove("visible");
+      chosenCards = [];
+      selectableCards = [];
+
+      if (showDeck) {
+        deckStage.classList.remove("hidden");
+        readingStatus.textContent = "กรอกคำถาม เลือกรูปแบบ แล้วกดสับไพ่";
+      }
+    }
+
+    function shuffle(cards) {
+      for (let index = cards.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [cards[index], cards[randomIndex]] = [cards[randomIndex], cards[index]];
+      }
+      return cards;
+    }
+  </script>
+</body>
+</html>
