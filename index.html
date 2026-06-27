@@ -926,7 +926,7 @@
             </div>
             <div class="field-group">
               <label for="birthDateInput">วันเดือนปีเกิด</label>
-              <input id="birthDateInput" type="text" inputmode="numeric" placeholder="เช่น 04062528 หรือ 04/06/2528">
+              <input id="birthDateInput" type="text" inputmode="numeric" placeholder="เช่น 05012528 หรือ 05/01/2528">
             </div>
           </div>
           <p class="privacy-note"><strong>ข้อมูลนี้จะไม่อยู่ในระบบ ไม่มีการเก็บบันทึกใดๆ</strong> ใช้เฉพาะบนหน้านี้เพื่อสร้างคำทำนายครั้งปัจจุบันเท่านั้น</p>
@@ -1605,7 +1605,7 @@
       if (!normalized) return null;
       const parts = normalized.split("/").map((part) => Number(part));
       if (parts.length !== 3 || parts.some((part) => !Number.isFinite(part))) {
-        return { error: "กรุณาใส่วันเกิดเป็นตัวเลข 8 หลัก เช่น 04062528 หรือรูปแบบ วัน/เดือน/ปี เช่น 04/06/2528" };
+        return { error: "กรุณาใส่วันเกิดเป็นตัวเลข 8 หลัก เช่น 05012528 หรือรูปแบบ วัน/เดือน/ปี เช่น 05/01/2528" };
       }
       let [day, month, year] = parts;
       const displayYear = year;
