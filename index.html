@@ -1733,68 +1733,176 @@
       return /ควร|หรือไม่|ดีไหม|ดีมั้ย|ไหม|มั้ย|เลือก|ตัดสินใจ|ทำสิ่งนี้|ทำแบบนี้/.test(question);
     }
 
+    const questionContexts = [
+      {
+        key: "work",
+        label: "เรื่องงาน",
+        keywords: ["งาน", "งานใหม่", "งานเดิม", "อาชีพ", "บริษัท", "หัวหน้า", "ลูกน้อง", "โปรเจกต์", "โปรเจค", "สัมภาษณ์", "ลาออก", "ย้ายงาน", "ธุรกิจ", "ค้าขาย"],
+        focus: "ตำแหน่ง หน้าที่ ความก้าวหน้า คนร่วมงาน และผลลัพธ์จากการลงมือ",
+        action: "ใช้ข้อมูลจริง วางแผนงานให้ชัด และดูว่าคนหรือระบบรอบตัวสนับสนุนแค่ไหน",
+        risk: "แรงกดดันจากคนร่วมงาน ความคาดหวังเกินจริง เอกสารหรือเงื่อนไขงานที่ยังไม่ชัด"
+      },
+      {
+        key: "money",
+        label: "เรื่องการเงิน",
+        keywords: ["เงิน", "การเงิน", "หนี้", "รายได้", "ลงทุน", "กำไร", "ขาดทุน", "ซื้อ", "ขาย", "กู้", "ผ่อน", "รายจ่าย", "ทรัพย์", "โชคลาภ"],
+        focus: "รายรับ รายจ่าย ความเสี่ยง สัญญา และความมั่นคงของทรัพย์สิน",
+        action: "ตรวจตัวเลขจริงก่อนตัดสินใจ แยกความจำเป็นออกจากความอยาก และเผื่อเงินสำรอง",
+        risk: "การตัดสินใจเร็วเกินไป หนี้สิน รายจ่ายซ่อนอยู่ หรือข้อตกลงที่ยังไม่รัดกุม"
+      },
+      {
+        key: "love",
+        label: "เรื่องความรัก",
+        keywords: ["รัก", "ความรัก", "แฟน", "คนรัก", "คู่", "แต่งงาน", "เลิก", "คบ", "คนคุย", "มือที่สาม", "โสด", "กลับมา", "สัมพันธ์"],
+        focus: "ความรู้สึก ความไว้ใจ การสื่อสาร สถานะ และความชัดเจนของความสัมพันธ์",
+        action: "คุยกันตรง ๆ โดยไม่ประชด ดูการกระทำจริง และอย่าตัดสินใจเพราะกลัวเสียหน้า",
+        risk: "คำพูดแรง ความคาดหวังไม่ตรงกัน ความเงียบ หรือความสัมพันธ์ที่ยังไม่ชัดเจน"
+      },
+      {
+        key: "health",
+        label: "เรื่องสุขภาพ",
+        keywords: ["สุขภาพ", "ป่วย", "โรค", "เจ็บ", "รักษา", "โรงพยาบาล", "อาการ", "เครียด", "พักผ่อน"],
+        focus: "พลังร่างกาย ใจ ความเครียด การพักผ่อน และการดูแลตัวเอง",
+        action: "ฟังสัญญาณร่างกาย ลดการฝืน และหากมีอาการจริงควรปรึกษาผู้เชี่ยวชาญ",
+        risk: "การปล่อยอาการไว้นาน ความเครียดสะสม หรือการใช้คำทำนายแทนคำแนะนำทางการแพทย์"
+      },
+      {
+        key: "study",
+        label: "เรื่องเรียนหรือสอบ",
+        keywords: ["เรียน", "สอบ", "มหาลัย", "มหาวิทยาลัย", "สมัครเรียน", "คะแนน", "ครู", "อาจารย์", "ทุน", "การศึกษา"],
+        focus: "วินัย ความพร้อม ความรู้ที่ต้องเติม และการวางแผนระยะยาว",
+        action: "แบ่งเป้าหมายเป็นขั้น ๆ อ่านข้อมูลให้ครบ และขอคำแนะนำจากผู้รู้",
+        risk: "การผัดวัน การมั่นใจเกินไป หรือเลือกทางเรียนโดยไม่ดูเงื่อนไขจริง"
+      },
+      {
+        key: "family",
+        label: "เรื่องครอบครัวหรือบ้าน",
+        keywords: ["บ้าน", "ครอบครัว", "พ่อ", "แม่", "ลูก", "ญาติ", "ที่ดิน", "อสังหา", "ย้ายบ้าน", "บ้านใหม่"],
+        focus: "ฐานชีวิต คนใกล้ตัว ความมั่นคง และความรับผิดชอบร่วมกัน",
+        action: "คุยกันด้วยเหตุผล จัดบทบาทหน้าที่ให้ชัด และดูรากฐานก่อนตัดสินใจเรื่องใหญ่",
+        risk: "ความเห็นไม่ตรงกัน ภาระที่คนหนึ่งแบกมากเกินไป หรือเรื่องทรัพย์สินที่ไม่ชัด"
+      },
+      {
+        key: "decision",
+        label: "เรื่องการตัดสินใจ",
+        keywords: ["ควร", "หรือไม่", "ดีไหม", "ดีมั้ย", "เลือก", "ตัดสินใจ", "ไปต่อ", "พอแค่นี้", "ทำไหม", "ทำมั้ย"],
+        focus: "ทางเลือก เงื่อนไข ความพร้อม และผลที่ต้องรับผิดชอบหลังตัดสินใจ",
+        action: "แยกข้อเท็จจริงออกจากอารมณ์ แล้วเลือกทางที่รับผลลัพธ์ได้จริง",
+        risk: "การตัดสินใจเพราะกลัวเสียโอกาส หรือฝืนทั้งที่เงื่อนไขยังไม่พร้อม"
+      }
+    ];
+
+    function detectQuestionContext(question) {
+      const text = question.trim();
+      if (!text) {
+        return {
+          key: "general",
+          label: "ภาพรวมทั่วไป",
+          focus: "ความหมายหลักของไพ่และพลังโดยรวมของช่วงเวลานี้",
+          action: "ใช้คำทำนายเป็นกระจกสะท้อนใจและดูว่าส่วนไหนตรงกับสถานการณ์จริง",
+          risk: "อย่าตีความเกินกว่าคำถาม เพราะยังไม่ได้ระบุเรื่องที่ต้องการคำตอบเฉพาะ"
+        };
+      }
+      return questionContexts.find((context) => context.key !== "decision" && context.keywords.some((word) => text.includes(word)))
+        || questionContexts.find((context) => context.key === "decision" && context.keywords.some((word) => text.includes(word)))
+        || {
+          key: "specific",
+          label: "คำถามเฉพาะเรื่อง",
+          focus: "ประเด็นที่ผู้ถามระบุไว้โดยตรง เงื่อนไขจริง และความรู้สึกที่เกี่ยวข้อง",
+          action: "นำความหมายไพ่กลับไปเทียบกับคำถามทีละข้อ อย่าอ่านแยกจากสถานการณ์จริง",
+          risk: "คำถามอาจมีรายละเอียดที่ยังไม่ครบ จึงควรตรวจข้อมูลก่อนสรุป"
+        };
+    }
+
+    function renderQuestionContextBlock(context, question) {
+      if (!question.trim()) {
+        return `<div class="summary-block"><h3>บริบทคำถาม</h3><p>ยังไม่ได้ระบุคำถาม ระบบจึงอ่านเป็นความหมายของไพ่และพลังภาพรวมเท่านั้น หากต้องการคำตอบที่ตรงเรื่อง เช่น งาน เงิน หรือความรัก ควรพิมพ์คำถามให้ชัดก่อนเปิดไพ่</p></div>`;
+      }
+      return `<div class="summary-block"><h3>บริบทคำถาม: ${escapeHtml(context.label)}</h3><p>คำทำนายนี้จะอ่านไพ่โดยผูกกลับเข้ากับ ${escapeHtml(context.focus)} ไม่ใช่อ่านเฉพาะความหมายไพ่แบบลอย ๆ</p><p><strong>แนวทางอ่าน:</strong> ${escapeHtml(context.action)}</p></div>`;
+    }
+
+    function getContextualReading(card, context, tone, question) {
+      if (!question.trim()) {
+        return `เมื่อไม่ได้ระบุคำถาม ไพ่ ${card.name} จึงอ่านเป็นพลังโดยรวม: ${card.result} แกนของไพ่คือ ${card.meaning} และน้ำหนักรอบนี้คือ ${tone.label}`;
+      }
+      const opening = `สำหรับ${context.label} ไพ่ ${card.name} ไม่ได้ตอบแค่ความหมายทั่วไป แต่ชี้ว่าแกนเรื่องนี้เกี่ยวกับ ${card.meaning}`;
+      if (context.key === "work") return `${opening} ในเชิงงานให้ดูว่าหน้าที่ คนร่วมงาน หรือโอกาสใหม่สอดคล้องกับเป้าหมายจริงหรือไม่ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      if (context.key === "money") return `${opening} ในเชิงการเงินให้ดูตัวเลข เงื่อนไข และความเสี่ยงจริงก่อน ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      if (context.key === "love") return `${opening} ในเชิงความรักให้ดูความชัดเจน การสื่อสาร และการกระทำจริงของอีกฝ่าย ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      if (context.key === "health") return `${opening} ในเชิงสุขภาพให้ใช้เป็นสัญญาณทบทวนการดูแลตัวเอง ไม่ใช่คำวินิจฉัย ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      if (context.key === "study") return `${opening} ในเชิงการเรียนให้ดูวินัย ความพร้อม และข้อมูลที่ต้องเติม ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      if (context.key === "family") return `${opening} ในเชิงบ้านและครอบครัวให้ดูฐานชีวิต ความรับผิดชอบ และคนที่เกี่ยวข้อง ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      return `${opening} ให้เทียบไพ่กับเงื่อนไขจริงของคำถาม ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+    }
     function renderPrivacySummary(fullName, birthText) {
       const name = fullName ? `ผู้ถาม: ${escapeHtml(fullName)}` : "ยังไม่ได้ระบุชื่อผู้ถาม";
       const birth = birthText ? `วันเดือนปีเกิดที่ใช้ประกอบ: ${escapeHtml(normalizeBirthDateInput(birthText) || birthText)}` : "ยังไม่ได้ระบุวันเดือนปีเกิด";
       return `<div class="summary-block"><h3>ข้อมูลผู้ถาม</h3><p>${name}</p><p>${birth}</p><p><strong>ข้อมูลนี้จะไม่อยู่ในระบบ ไม่มีการเก็บบันทึกใดๆ</strong> การอ่านนี้ประมวลผลบนหน้าเว็บขณะใช้งานเท่านั้น</p></div>`;
     }
 
-    function renderOneCardSummary(card, detail, question, profile) {
+    function renderOneCardSummary(card, detail, question, profile, questionContext) {
       const keyMessage = detail ? detail.summary : card.result;
       const decisionMode = isDecisionQuestion(question);
       const tone = getToneProfile(card);
+      const contextualReading = getContextualReading(card, questionContext, tone, question);
       const decisionText = decisionMode
-        ? `เพราะคำถามมีลักษณะถามว่า “ควรทำหรือไม่” ไพ่ ${escapeHtml(card.name)} จึงตอบผ่านน้ำหนัก ${escapeHtml(tone.label)}: ${escapeHtml(tone.decision)} หากยังมีข้อมูลไม่ครบ ให้ถือคำตอบนี้เป็นสัญญาณให้ตรวจเงื่อนไขก่อน ไม่ใช่คำสั่งให้ทำทันที`
-        : `คำถามนี้ควรอ่านเป็นแนวโน้มและทิศทาง ไพ่ ${escapeHtml(card.name)} ชี้แกนหลักคือ ${escapeHtml(card.meaning)} โดยน้ำหนักคำทำนายรอบนี้คือ ${escapeHtml(tone.label)} จึงต้องอ่านทั้งโอกาสและความเสี่ยงพร้อมกัน`;
+        ? `เพราะคำถามมีลักษณะถามว่า “ควรทำหรือไม่” ไพ่ ${escapeHtml(card.name)} จึงตอบผ่านบริบท ${escapeHtml(questionContext.label)} และน้ำหนัก ${escapeHtml(tone.label)}: ${escapeHtml(tone.decision)} หากยังมีข้อมูลไม่ครบ ให้ถือคำตอบนี้เป็นสัญญาณให้ตรวจเงื่อนไขก่อน ไม่ใช่คำสั่งให้ทำทันที`
+        : question.trim()
+          ? `คำถามนี้ถูกอ่านในบริบท ${escapeHtml(questionContext.label)} ไพ่ ${escapeHtml(card.name)} จึงต้องแปลกลับไปที่ ${escapeHtml(questionContext.focus)} ไม่ใช่อ่านเป็นความหมายไพ่ทั่วไปเท่านั้น`
+          : `เมื่อไม่ได้ระบุคำถาม ระบบจึงอ่านไพ่ ${escapeHtml(card.name)} เป็นภาพรวมของพลังและจังหวะ ไม่ได้ผูกกับเรื่องงาน เงิน หรือความรักโดยเฉพาะ`;
       const astroAdvice = profile && !profile.error
-        ? `เมื่อเทียบกับพื้นดวงวัน${profile.weekday} พลัง ${profile.planet} ทำให้คำตอบนี้ควรใช้วิธี ${escapeHtml(profile.advice)} แต่ยังต้องให้ความสำคัญกับน้ำหนักคำทำนายรอบนี้: ${escapeHtml(tone.summary)}`
+        ? `เมื่อเทียบกับพื้นดวงวัน${profile.weekday} พลัง ${profile.planet} ทำให้คำตอบนี้ควรใช้วิธี ${escapeHtml(profile.advice)} แต่ยังต้องให้ความสำคัญกับบริบทคำถามและน้ำหนักคำทำนายรอบนี้: ${escapeHtml(tone.summary)}`
         : "หากต้องการให้คำอ่านเฉพาะตัวขึ้น สามารถใส่วันเดือนปีเกิดเพื่อให้ระบบอ่านประกอบวันเกิด ดาวประจำวัน และกำลังวัน";
 
       return `
         <div class="summary-block"><h3>คำตอบหลักจากไพ่</h3><p><strong>ไพ่ ${escapeHtml(card.name)}</strong> มีแกนความหมายคือ ${escapeHtml(card.meaning)}</p><p>${escapeHtml(keyMessage)}</p></div>
+        <div class="summary-block"><h3>คำตอบที่ผูกกับคำถาม</h3><p>${escapeHtml(contextualReading)}</p></div>
         <div class="summary-block"><h3>${escapeHtml(tone.title)}</h3><p>${escapeHtml(tone.summary)}</p><p><strong>แนวตัดสินใจ:</strong> ${escapeHtml(tone.decision)}</p></div>
         <div class="summary-block"><h3>วิเคราะห์คำถาม</h3><p>${decisionText}</p><p>${astroAdvice}</p></div>
-        <div class="summary-block"><h3>ข้อควรระวังและแนวทางปฏิบัติ</h3><ul><li>${escapeHtml(tone.caution)}</li><li>อย่าใช้คำทำนายแทนข้อมูลจริง เอกสาร สัญญา หรือคำปรึกษาจากผู้รู้ในเรื่องสำคัญ</li><li>ถ้าเรื่องนี้เกี่ยวกับคนอื่น ให้ดูการกระทำจริงมากกว่าคำพูดหรือความคาดหวัง</li><li>หากใจยังร้อนหรือกังวลมาก ควรรอให้ใจนิ่งก่อนค่อยตัดสินใจขั้นสุดท้าย</li></ul></div>
-        <div class="summary-block"><h3>สรุปการตัดสินใจ</h3><p>คำตอบไม่ได้เอนไปทางดีเสมอไป แต่บอกระดับความพร้อมของสถานการณ์ ถ้าน้ำหนักออกเตือนให้ชะลอและแก้จุดเสี่ยงก่อน ถ้าออกกลางให้เก็บข้อมูลเพิ่ม ถ้าออกส่งเสริมจึงค่อยเดินหน้าพร้อมแผนสำรอง</p></div>`;
+        <div class="summary-block"><h3>ข้อควรระวังและแนวทางปฏิบัติ</h3><ul><li>${escapeHtml(tone.caution)}</li><li>${escapeHtml(questionContext.risk)}</li><li>อย่าใช้คำทำนายแทนข้อมูลจริง เอกสาร สัญญา หรือคำปรึกษาจากผู้รู้ในเรื่องสำคัญ</li><li>หากใจยังร้อนหรือกังวลมาก ควรรอให้ใจนิ่งก่อนค่อยตัดสินใจขั้นสุดท้าย</li></ul></div>
+        <div class="summary-block"><h3>สรุปการตัดสินใจ</h3><p>${question.trim() ? `คำตอบนี้สอดคล้องกับ${escapeHtml(questionContext.label)}ในลักษณะให้ดูว่า ${escapeHtml(questionContext.focus)} อยู่ในสภาพพร้อมแค่ไหน` : "เพราะไม่ได้ระบุคำถาม คำตอบนี้จึงเป็นการอ่านความหมายไพ่โดยรวม"} ถ้าน้ำหนักออกเตือนให้ชะลอและแก้จุดเสี่ยงก่อน ถ้าออกกลางให้เก็บข้อมูลเพิ่ม ถ้าออกส่งเสริมจึงค่อยเดินหน้าพร้อมแผนสำรอง</p></div>`;
     }
-    function renderThreeCardSummary(question, profile) {
+    function renderThreeCardSummary(question, profile, questionContext) {
       const parts = chosenCards.map((card, index) => {
         const tone = getToneProfile(card);
-        return `<p><strong>${escapeHtml(spreadLabels[index])}</strong> คือ ${escapeHtml(card.name)}: ${escapeHtml(card.result)} แกนของไพ่คือ ${escapeHtml(card.meaning)} <br><strong>${escapeHtml(tone.label)}</strong>: ${escapeHtml(tone.summary)}</p>`;
+        const contextualReading = getContextualReading(card, questionContext, tone, question);
+        return `<p><strong>${escapeHtml(spreadLabels[index])}</strong> คือ ${escapeHtml(card.name)}: ${escapeHtml(card.result)}<br><strong>ผูกกับ${escapeHtml(questionContext.label)}:</strong> ${escapeHtml(contextualReading)}<br><strong>${escapeHtml(tone.label)}</strong>: ${escapeHtml(tone.summary)}</p>`;
       }).join("");
       const [past, present, future] = chosenCards;
-      const tones = chosenCards.map(getToneProfile);
       const cautionCount = chosenCards.filter((card) => card.drawTone === "caution").length;
       const supportiveCount = chosenCards.filter((card) => card.drawTone === "supportive").length;
       const overallTone = cautionCount >= 2 ? toneProfiles.caution : supportiveCount >= 2 ? toneProfiles.supportive : toneProfiles.mixed;
       const astroAdvice = profile && !profile.error
-        ? `เมื่อประกอบกับวัน${profile.weekday} ดาว ${profile.planet} และกำลังวัน ${profile.strength} แนวทางที่เหมาะคือ ${escapeHtml(profile.advice)} แต่ต้องถ่วงน้ำหนักกับภาพรวมไพ่รอบนี้: ${escapeHtml(overallTone.summary)}`
+        ? `เมื่อประกอบกับวัน${profile.weekday} ดาว ${profile.planet} และกำลังวัน ${profile.strength} แนวทางที่เหมาะคือ ${escapeHtml(profile.advice)} แต่ต้องถ่วงน้ำหนักกับบริบท ${escapeHtml(questionContext.label)} และภาพรวมไพ่รอบนี้: ${escapeHtml(overallTone.summary)}`
         : "หากระบุวันเกิด ระบบจะช่วยอ่านร่วมกับวันเกิด ดาวประจำวัน และกำลังวันให้เฉพาะตัวมากขึ้น";
       const decisionText = isDecisionQuestion(question)
-        ? `สำหรับคำถามที่ถามว่าควรทำหรือไม่ ให้ดูสามใบเป็นลำดับเหตุผล: อดีตคือสิ่งที่พาคุณมาถึงจุดนี้ ปัจจุบันคือเงื่อนไขที่ต้องจัดการ และแนวโน้มคือผลที่ควรเตรียมรับ ภาพรวมครั้งนี้เป็น ${escapeHtml(overallTone.label)} จึงควรใช้แนวทางว่า ${escapeHtml(overallTone.decision)}`
-        : `สามใบนี้ควรอ่านเป็นเส้นทางของเหตุการณ์ ไม่ใช่แค่ผลลัพธ์ปลายทาง ภาพรวมครั้งนี้เป็น ${escapeHtml(overallTone.label)} จึงต้องดูทั้งแรงหนุนและจุดเสี่ยงไปพร้อมกัน`;
+        ? `สำหรับคำถามที่ถามว่าควรทำหรือไม่ ให้ดูสามใบเป็นลำดับเหตุผลในบริบท ${escapeHtml(questionContext.label)}: อดีตคือสิ่งที่พาคุณมาถึงจุดนี้ ปัจจุบันคือเงื่อนไขที่ต้องจัดการ และแนวโน้มคือผลที่ควรเตรียมรับ ภาพรวมครั้งนี้เป็น ${escapeHtml(overallTone.label)} จึงควรใช้แนวทางว่า ${escapeHtml(overallTone.decision)}`
+        : question.trim()
+          ? `สามใบนี้อ่านเป็นเส้นทางของ ${escapeHtml(questionContext.label)} โดยดูว่า ${escapeHtml(questionContext.focus)} กำลังเปลี่ยนจากอดีตมาปัจจุบันและแนวโน้มอย่างไร`
+          : `สามใบนี้อ่านเป็นภาพรวมของไพ่ เพราะยังไม่ได้ระบุคำถามเฉพาะ จึงไม่ผูกกับเรื่องงาน เงิน หรือความรักโดยตรง`;
       return `
-        <div class="summary-block"><h3>ภาพรวมสามใบ</h3>${parts}</div>
+        <div class="summary-block"><h3>ภาพรวมสามใบตามบริบทคำถาม</h3>${parts}</div>
         <div class="summary-block"><h3>${escapeHtml(overallTone.title)}</h3><p>${escapeHtml(overallTone.summary)}</p><p><strong>แนวตัดสินใจ:</strong> ${escapeHtml(overallTone.decision)}</p></div>
         <div class="summary-block"><h3>การเชื่อมโยงของคำทำนาย</h3><p>จากอดีต <strong>${escapeHtml(past.name)}</strong> มาสู่ปัจจุบัน <strong>${escapeHtml(present.name)}</strong> แล้วไปยังแนวโน้ม <strong>${escapeHtml(future.name)}</strong> ภาพรวมบอกว่าเรื่องนี้มีทั้งรากเดิม เงื่อนไขปัจจุบัน และผลลัพธ์ที่ต้องเตรียมรับ ไม่ควรมองแค่ใบสุดท้ายใบเดียว</p><p>${decisionText}</p></div>
         <div class="summary-block"><h3>ประกอบดวงวันเกิด</h3><p>${astroAdvice}</p></div>
-        <div class="summary-block"><h3>คำแนะนำรวม</h3><ul><li>${escapeHtml(overallTone.caution)}</li><li>เริ่มจากแก้เงื่อนไขของไพ่ปัจจุบันก่อน เพราะเป็นจุดที่คุณควบคุมได้มากที่สุด</li><li>ใช้ไพ่แนวโน้มเป็นคำเตือนล่วงหน้า ว่าควรเสริมอะไรหรือหลีกเลี่ยงอะไร</li><li>ถ้าเรื่องเดิมยังไม่เปลี่ยน ควรรอ 7 วันหรือรอเหตุการณ์ใหม่ก่อนเปิดซ้ำ เพื่อไม่ให้คำตอบวนตามอารมณ์</li></ul></div>`;
+        <div class="summary-block"><h3>คำแนะนำรวม</h3><ul><li>${escapeHtml(overallTone.caution)}</li><li>${escapeHtml(questionContext.risk)}</li><li>เริ่มจากแก้เงื่อนไขของไพ่ปัจจุบันก่อน เพราะเป็นจุดที่คุณควบคุมได้มากที่สุด</li><li>ใช้ไพ่แนวโน้มเป็นคำเตือนล่วงหน้า ว่าควรเสริมอะไรหรือหลีกเลี่ยงอะไร</li><li>ถ้าเรื่องเดิมยังไม่เปลี่ยน ควรรอ 7 วันหรือรอเหตุการณ์ใหม่ก่อนเปิดซ้ำ เพื่อไม่ให้คำตอบวนตามอารมณ์</li></ul></div>`;
     }
     function buildSummary() {
       const question = questionInput.value.trim();
       const fullName = fullNameInput.value.trim();
       const birthText = birthDateInput.value.trim();
       const profile = getThaiAstroProfile(birthText);
+      const questionContext = detectQuestionContext(question);
       const prefix = question ? `<div class="summary-block"><h3>คำถาม</h3><p>${escapeHtml(`สำหรับคำถาม “${question}”`)}</p></div>` : `<div class="summary-block"><h3>คำถาม</h3><p>ยังไม่ได้ระบุคำถาม ระบบจึงอ่านเป็นแนวโน้มทั่วไปจากไพ่ที่เปิดได้</p></div>`;
-      const profileBlocks = `${renderPrivacySummary(fullName, birthText)}${renderAstroContext(profile)}`;
+      const profileBlocks = `${renderPrivacySummary(fullName, birthText)}${renderAstroContext(profile)}${renderQuestionContextBlock(questionContext, question)}`;
 
       if (selectedSpread === 1) {
         const card = chosenCards[0];
         const detail = cardInterpretations[card.id];
-        return `${prefix}${profileBlocks}${renderOneCardSummary(card, detail, question, profile)}`;
+        return `${prefix}${profileBlocks}${renderOneCardSummary(card, detail, question, profile, questionContext)}`;
       }
 
-      return `${prefix}${profileBlocks}${renderThreeCardSummary(question, profile)}`;
+      return `${prefix}${profileBlocks}${renderThreeCardSummary(question, profile, questionContext)}`;
     }
     function resetReading(showDeck) {
       choiceGrid.innerHTML = "";
