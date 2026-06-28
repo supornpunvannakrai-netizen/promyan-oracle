@@ -944,7 +944,7 @@
         <section class="panel" aria-label="ตั้งคำถามและเลือกรูปแบบการเปิดไพ่">
           <div class="field-group">
             <label for="questionInput">คำถามของคุณ</label>
-            <textarea id="questionInput" placeholder="พิมพ์คำถาม เช่น ฉันควรทำสิ่งนี้หรือไม่ เรื่องงาน ความรัก การเงิน หรือทางเลือกที่กำลังลังเล"></textarea>
+            <textarea id="questionInput" placeholder="พิมพ์คำถาม เช่น งานใหม่หรือ งานเดิม ดีกว่า เรื่องความรัก การเงิน หรือทางเลือกที่กำลังลังเล"></textarea>
           </div>
           <div class="birth-grid">
             <div class="field-group">
@@ -1819,7 +1819,7 @@
       if (context.key === "health") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องสุขภาพ ให้ใช้เป็นสัญญาณทบทวนการดูแลตัวเอง ไม่ใช่คำวินิจฉัย คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
       if (context.key === "study") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องเรียนหรือสอบ ให้ดูวินัย ความพร้อม ข้อมูลที่ยังขาด และเวลาที่เหลือ คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
       if (context.key === "family") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องบ้านหรือครอบครัว ให้ดูฐานชีวิต ความรับผิดชอบร่วม และบทบาทของคนที่เกี่ยวข้อง คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      if (context.key === "decision") return `${direct} เมื่อนำกลับมาอ่านเป็นคำถามเรื่องการตัดสินใจ ไพ่ไม่ได้สั่งให้ทำหรือไม่ทำทันที แต่ให้ดูว่าเงื่อนไขจริงพร้อมพอหรือยัง คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      if (context.key === "decision") return `${direct} เมื่อนำกลับมาอ่านเป็นคำถามเรื่องทางเลือก ให้ดูว่าแต่ละทางมีเงื่อนไขจริงพร้อมแค่ไหน และผลที่ตามมารับได้หรือไม่ แนวอ่านรอบนี้คือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
       return `${direct} เมื่อนำกลับมาอ่านเป็น${contextLabel} ให้เทียบความหมายไพ่กับรายละเอียดจริงของคำถาม โดยเฉพาะ ${context.focus} คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
     }
     function renderPrivacySummary(fullName, birthText) {
@@ -1831,15 +1831,12 @@
     function renderOneCardSummary(card, detail, question, profile, questionContext) {
       const asked = question.trim();
       const keyMessage = detail ? detail.summary : card.result;
-      const decisionMode = isDecisionQuestion(question);
       const tone = getToneProfile(card);
       const contextLabel = getQuestionContextLabel(questionContext, question);
       const contextualReading = getContextualReading(card, questionContext, tone, question);
-      const decisionText = decisionMode
-        ? `คำถามนี้มีลักษณะถามว่า “ควรทำหรือไม่” ไพ่ ${escapeHtml(card.name)} จึงไม่ได้ตอบแบบใช่หรือไม่ใช่ลอย ๆ แต่ให้ดูว่า ${escapeHtml(questionContext.focus)} พร้อมพอหรือยัง คำตอบเชิงตัดสินใจคือ ${escapeHtml(tone.decision)} หากข้อมูลจริงยังไม่ครบ ให้ถือคำตอบนี้เป็นสัญญาณให้ตรวจเงื่อนไขก่อน ไม่ใช่คำสั่งให้ทำทันที`
-        : asked
-          ? `คำถามนี้ถูกอ่านในบริบท ${escapeHtml(contextLabel)} ไพ่ ${escapeHtml(card.name)} จึงต้องแปลกลับไปที่ ${escapeHtml(questionContext.focus)} โดยตรง หากสิ่งที่ถามกำลังตรงกับแกนของไพ่ โอกาสหรือข้อควรระวังจะชัดขึ้นทันที`
-          : `เมื่อไม่ได้ระบุคำถาม ระบบจึงอ่านไพ่ ${escapeHtml(card.name)} เป็นภาพรวมของพลังและจังหวะ ไม่ได้ผูกกับเรื่องงาน เงิน หรือความรักโดยเฉพาะ`;
+      const decisionText = asked
+        ? `คำถามนี้ถูกอ่านในบริบท ${escapeHtml(contextLabel)} ไพ่ ${escapeHtml(card.name)} จึงต้องแปลกลับไปที่ ${escapeHtml(questionContext.focus)} โดยตรง หากสิ่งที่ถามกำลังตรงกับแกนของไพ่ โอกาสหรือข้อควรระวังจะชัดขึ้นทันที แนวอ่านรอบนี้คือ ${escapeHtml(tone.decision)}`
+        : `เมื่อไม่ได้ระบุคำถาม ระบบจึงอ่านไพ่ ${escapeHtml(card.name)} เป็นภาพรวมของพลังและจังหวะ ไม่ได้ผูกกับเรื่องงาน เงิน หรือความรักโดยเฉพาะ`;
       const astroAdvice = profile && !profile.error
         ? `เมื่อเทียบกับพื้นดวงวัน${profile.weekday} พลัง ${profile.planet} ช่วยบอกวิธีรับมือว่า ${escapeHtml(profile.advice)} เมื่อนำมารวมกับไพ่ใบนี้ ควรใช้ทั้งเหตุผลจากสถานการณ์จริงและจังหวะในใจของผู้ถามประกอบกัน`
         : "หากต้องการให้คำอ่านเฉพาะตัวขึ้น สามารถใส่วันเดือนปีเกิดเพื่อให้ระบบอ่านประกอบวันเกิด ดาวประจำวัน และกำลังวัน";
@@ -1852,7 +1849,7 @@
         <div class="summary-block"><h3>คำตอบที่ผูกกับคำถาม</h3><p>${escapeHtml(contextualReading)}</p></div>
         <div class="summary-block"><h3>วิเคราะห์คำถาม</h3><p>${decisionText}</p><p>${astroAdvice}</p></div>
         <div class="summary-block"><h3>ข้อควรระวังที่เกี่ยวกับคำถาม</h3><ul><li>${escapeHtml(tone.caution)}</li><li>${escapeHtml(questionContext.risk)}</li><li>อย่าใช้คำทำนายแทนข้อมูลจริง เอกสาร สัญญา หรือคำปรึกษาจากผู้รู้ในเรื่องสำคัญ</li><li>หากใจยังร้อนหรือกังวลมาก ควรรอให้ใจนิ่งก่อนค่อยตัดสินใจขั้นสุดท้าย</li></ul></div>
-        <div class="summary-block"><h3>สรุปที่ใช้ตัดสินใจ</h3><p>${finalText}</p></div>`;
+        <div class="summary-block"><h3>สรุปคำตอบ</h3><p>${finalText}</p></div>`;
     }
     function renderThreeCardSummary(question, profile, questionContext) {
       const asked = question.trim();
