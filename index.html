@@ -1806,21 +1806,177 @@
       return `<div class="summary-block"><h3>บริบทคำถาม: ${escapeHtml(contextLabel)}</h3><p><strong>คำถามที่ถามคือ</strong> “${escapeHtml(asked)}”</p><p>คำทำนายนี้จะใช้คำถามเป็นแกน แล้วนำไพ่ที่เปิดได้กลับมาตอบประเด็นนั้นโดยตรง ไม่อ่านไพ่แบบลอย ๆ แยกจากเรื่องที่ถาม</p><p><strong>แนวทางอ่าน:</strong> ${escapeHtml(context.action)}</p></div>`;
     }
 
+    function includesAny(text, words) {
+      return words.some((word) => text.includes(word));
+    }
+
+    function getToneKey(tone) {
+      if (!tone) return "mixed";
+      if (tone === toneProfiles.supportive || tone.label === "ส่งเสริม") return "supportive";
+      if (tone === toneProfiles.caution || tone.label === "เตือน") return "caution";
+      return "mixed";
+    }
+
+    function getDirectToneAnswer(tone, positiveText, mixedText, cautionText) {
+      const key = getToneKey(tone);
+      if (key === "supportive") return positiveText;
+      if (key === "caution") return cautionText;
+      return mixedText;
+    }
+
+    function getProbabilityLevel(tone) {
+      const key = getToneKey(tone);
+      if (key === "supportive") return "สูง";
+      if (key === "caution") return "ต่ำถึงกลาง";
+      return "กลาง";
+    }
+
+    function getDefaultTimeframe(tone, isSoon) {
+      const key = getToneKey(tone);
+      if (key === "supportive") return isSoon ? "ภายใน 2-4 สัปดาห์มีโอกาสเห็นสัญญาณหรือข่าวดี" : "ภายใน 1-2 เดือนมีโอกาสเห็นความคืบหน้า";
+      if (key === "caution") return isSoon ? "ยังไม่เด่นใน 1 เดือนแรก อาจขยับใน 2-3 เดือนถ้าแก้เงื่อนไขสำคัญได้" : "ประมาณ 2-3 เดือนขึ้นไป หรือหลังจากเงื่อนไขติดขัดถูกแก้";
+      return isSoon ? "ภายใน 1-2 เดือนมีโอกาสเห็นคำตอบหรือความคืบหน้าที่ชัดขึ้น" : "ประมาณ 1-3 เดือน ขึ้นกับขั้นตอนและคนที่เกี่ยวข้อง";
+    }
+
+    function buildDirectQuestionReading(card, context, tone, question) {
+      const asked = question.trim();
+      const lower = asked.toLowerCase();
+      const probability = getProbabilityLevel(tone);
+      if (!asked) {
+        return {
+          answer: `ยังไม่ได้ระบุคำถาม จึงยังตอบว่าได้หรือไม่ได้ไม่ได้ ไพ่ ${card.name} อ่านเป็นภาพรวมของช่วงนี้`,
+          probability: "ไม่ระบุ",
+          timeframe: "ไม่ระบุ เพราะยังไม่มีคำถามเฉพาะ",
+          reason: `แกนของไพ่คือ ${card.meaning} และภาพรวมคือ ${card.result}`,
+          conditions: "หากต้องการคำตอบชัด ให้ระบุเรื่องที่ถาม เช่น งาน เงิน ความรัก หรือช่วงเวลาที่อยากรู้",
+          advice: "ใช้คำอ่านนี้เพื่อทบทวนใจและสถานการณ์ปัจจุบันก่อน",
+          caution: "อย่าตีความเกินกว่าคำถาม เพราะยังไม่มีประเด็นเฉพาะให้ผูกคำตอบ"
+        };
+      }
+
+      const isSoon = includesAny(lower, ["เร็ว", "เร็วๆ", "เร็ว ๆ", "เร็ววันนี้", "ช่วงนี้", "เดือนนี้", "อาทิตย์นี้", "ภายใน", "เมื่อไหร่", "เมื่อไร"]);
+      const isNewJob = context.key === "work" && includesAny(lower, ["งานใหม่", "ได้งาน", "สมัคร", "สัมภาษณ์", "เรียกตัว", "รับเข้าทำงาน", "ตำแหน่งใหม่", "บริษัทใหม่"]);
+      const isOldVsNew = context.key === "work" && includesAny(lower, ["งานเดิม", "ที่เดิม", "ย้ายงาน", "ลาออก"]);
+      const isMoneyGain = context.key === "money" && includesAny(lower, ["ได้เงิน", "เงินเข้า", "รายได้", "กำไร", "ขายได้", "ลาภ", "โชค"]);
+      const isLoveReturn = context.key === "love" && includesAny(lower, ["กลับมา", "คืนดี", "ทักมา", "รักไหม", "ยังรัก", "เลิก", "คบต่อ"]);
+      const isChoice = context.key === "decision" || includesAny(lower, ["เลือก", "ทางไหนดี", "ดีกว่า", "เอาไง", "ไปต่อ", "พอแค่นี้"]);
+
+      if (isNewJob) {
+        return {
+          answer: getDirectToneAnswer(tone,
+            "แนวโน้ม: ได้ มีโอกาสได้งานใหม่หรือได้รับข่าวดีเรื่องงาน",
+            "แนวโน้ม: มีโอกาสได้งานใหม่ แต่ยังไม่ใช่งานที่ได้มาแบบง่ายหรือเร็วทันที",
+            "แนวโน้ม: ยังไม่ได้เร็ว ๆ นี้ หรือยังมีเงื่อนไขสำคัญที่ทำให้ล่าช้า"),
+          probability,
+          timeframe: getDirectToneAnswer(tone,
+            isSoon ? "ภายใน 2-4 สัปดาห์มีโอกาสถูกติดต่อหรือเห็นข่าวดี" : "ภายใน 1-2 เดือนมีโอกาสเห็นความคืบหน้า",
+            "ภายใน 1-2 เดือนมีโอกาสเห็นข่าวดีหรือมีการติดต่อกลับที่ชัดเจน",
+            "ยังไม่เด่นใน 1 เดือนแรก อาจต้องรอประมาณ 2-3 เดือนหรือหลังจากปรับใบสมัคร/สัมภาษณ์ให้พร้อมกว่าเดิม"),
+          reason: `ไพ่ ${card.name} หมายถึง ${card.meaning} เมื่อนำมาแปลเรื่องงานใหม่ ไพ่ใบนี้ชี้ถึงแรงผลักดัน อำนาจการตัดสินใจ ผู้ใหญ่หรือคนที่ช่วยสนับสนุน และโอกาสจากความสามารถจริง`,
+          conditions: "โอกาสจะชัดขึ้นถ้ามีการสมัครจริง ติดตามผลจริง มีคนแนะนำ มีผู้ใหญ่เห็นผลงาน หรือสมัครในตำแหน่งที่ตรงกับประสบการณ์ ไม่ใช่รอให้โอกาสเข้ามาเอง",
+          advice: "อย่ารออย่างเดียว ให้เร่งส่งใบสมัคร ติดต่อคนรู้จัก เตรียมสัมภาษณ์ และใช้ผลงาน/ประสบการณ์เป็นตัวนำ งานที่มาจากการแนะนำหรือ connection จะมีน้ำหนักมากเป็นพิเศษ",
+          caution: "อย่าเพิ่งมั่นใจจนกว่าจะมีการยืนยันจริง ตรวจเงินเดือน หน้าที่ สัญญา เวลาเดินทาง และเงื่อนไขทดลองงานก่อนตัดสินใจ"
+        };
+      }
+
+      if (isOldVsNew) {
+        return {
+          answer: getDirectToneAnswer(tone,
+            "แนวโน้ม: ทางใหม่มีน้ำหนักดีกว่า แต่ควรเดินแบบมีแผน",
+            "แนวโน้ม: ยังไม่ชัด ต้องเทียบงานเดิมกับงานใหม่ให้ละเอียดก่อนตัดสินใจ",
+            "แนวโน้ม: ยังไม่ควรรีบออกจากงานเดิมจนกว่างานใหม่จะยืนยันชัด"),
+          probability,
+          timeframe: getDefaultTimeframe(tone, isSoon),
+          reason: `ไพ่ ${card.name} สะท้อน ${card.meaning} จึงให้ดูอำนาจตัดสินใจ โอกาสเติบโต และคนที่มีผลต่อการเปลี่ยนงาน`,
+          conditions: "ทางใหม่จะดีขึ้นเมื่อข้อเสนอเป็นลายลักษณ์อักษร หน้าที่ชัด เงินและเวลาคุ้ม และมีโอกาสโตจริง",
+          advice: "เทียบเงินเดือน หน้าที่ ความมั่นคง โอกาสโต และสภาพแวดล้อมจริงเป็นข้อ ๆ ก่อนตัดสินใจ",
+          caution: "อย่าใช้เพียงความเบื่อหรือแรงกดดันปัจจุบันเป็นเหตุผลเดียวในการย้ายงาน"
+        };
+      }
+
+      if (context.key === "work") {
+        return {
+          answer: getDirectToneAnswer(tone,
+            "แนวโน้ม: งานมีโอกาสสำเร็จหรือขยับดีขึ้น",
+            "แนวโน้ม: งานมีโอกาส แต่ยังต้องจัดเงื่อนไขให้พร้อมก่อนผลชัด",
+            "แนวโน้ม: งานยังติดขัดหรือยังไม่สำเร็จเร็ว ๆ นี้"),
+          probability,
+          timeframe: getDefaultTimeframe(tone, isSoon),
+          reason: `ไพ่ ${card.name} บอกว่าประเด็นงานรอบนี้ผูกกับ ${card.meaning} จึงควรดูตำแหน่ง หน้าที่ ผู้มีอำนาจ และการสนับสนุนรอบตัว`,
+          conditions: "ผลลัพธ์จะดีขึ้นเมื่อมีแผนงานชัด หลักฐานงานพร้อม คนตัดสินใจเห็นคุณค่า และไม่มีเงื่อนไขงานที่คลุมเครือ",
+          advice: "ทำงานให้มีหลักฐาน วางแผนเป็นขั้นตอน คุยกับคนที่ตัดสินใจได้ และอย่าปล่อยให้เรื่องสำคัญคลุมเครือ",
+          caution: context.risk
+        };
+      }
+
+      if (isMoneyGain) {
+        return {
+          answer: getDirectToneAnswer(tone,
+            "แนวโน้ม: มีโอกาสได้เงินหรือรายได้เข้า",
+            "แนวโน้ม: มีโอกาสได้เงิน แต่ยังต้องรอจังหวะหรือเอกสารให้ชัด",
+            "แนวโน้ม: ยังไม่เด่นว่าจะได้เงินเร็ว ๆ นี้"),
+          probability,
+          timeframe: getDefaultTimeframe(tone, isSoon),
+          reason: `ไพ่ ${card.name} สะท้อน ${card.meaning} เมื่อนำมาอ่านเรื่องเงินให้ดูความมั่นคง เอกสาร และความรับผิดชอบ`,
+          conditions: "เงินจะเข้าชัดขึ้นเมื่อมีข้อตกลง ตัวเลข กำหนดจ่าย หรือเอกสารยืนยัน ไม่ใช่คำพูดลอย ๆ",
+          advice: "ตรวจตัวเลขจริง นัดหมายการจ่ายเงิน และข้อตกลงให้ครบก่อนวางแผนใช้เงิน",
+          caution: context.risk
+        };
+      }
+
+      if (isLoveReturn) {
+        return {
+          answer: getDirectToneAnswer(tone,
+            "แนวโน้ม: มีโอกาสกลับมาคุยหรือปรับความเข้าใจ",
+            "แนวโน้ม: ยังไม่ชัด ต้องดูการกระทำจริงมากกว่าคำพูด",
+            "แนวโน้ม: ยังไม่ควรคาดหวังว่าจะกลับมาเร็ว ๆ นี้"),
+          probability,
+          timeframe: getDefaultTimeframe(tone, isSoon),
+          reason: `ไพ่ ${card.name} ให้ดู ${card.meaning} จึงชี้ว่าความสัมพันธ์ต้องดูความชัดเจน อำนาจใจ และการกระทำจริง`,
+          conditions: "โอกาสจะดีขึ้นเมื่อทั้งสองฝ่ายยอมคุยตรง ๆ ลดทิฐิ และมีการกระทำที่สม่ำเสมอ",
+          advice: "คุยให้ตรงประเด็น ลดการประชด และดูว่าอีกฝ่ายทำสม่ำเสมอแค่ไหน",
+          caution: context.risk
+        };
+      }
+
+      if (isChoice) {
+        return {
+          answer: getDirectToneAnswer(tone,
+            "แนวโน้ม: เลือกเดินหน้าได้ แต่ต้องเลือกทางที่รับผลลัพธ์ได้จริง",
+            "แนวโน้ม: ยังไม่ควรรีบเลือก ต้องชั่งน้ำหนักก่อน",
+            "แนวโน้ม: ยังไม่ควรตัดสินใจตอนนี้ ควรชะลอและแก้จุดเสี่ยงก่อน"),
+          probability,
+          timeframe: getDefaultTimeframe(tone, isSoon),
+          reason: `ไพ่ ${card.name} สะท้อน ${card.meaning} จึงให้ใช้เหตุผล ความพร้อม และผลที่ตามมาเป็นตัวตัดสิน`,
+          conditions: "ทางเลือกที่เหมาะควรมีข้อมูลครบ ความเสี่ยงรับได้ และไม่ทำให้เสียหลักระยะยาว",
+          advice: "เขียนข้อดีข้อเสียของแต่ละทาง ตรวจเงื่อนไขจริง และเลือกทางที่เสียหายน้อยที่สุดหากผลไม่เป็นไปตามหวัง",
+          caution: context.risk
+        };
+      }
+
+      return {
+        answer: getDirectToneAnswer(tone,
+          `แนวโน้ม: มีโอกาสสำเร็จหรือเดินหน้าได้`,
+          `แนวโน้ม: ยังไม่ชัด มีโอกาสแต่ต้องรอหรือจัดเงื่อนไขก่อน`,
+          `แนวโน้ม: ยังไม่ควรคาดหวังผลเร็ว ๆ นี้`),
+        probability,
+        timeframe: getDefaultTimeframe(tone, isSoon),
+        reason: `ไพ่ ${card.name} มีแกนความหมายว่า ${card.meaning} และเมื่อนำมาผูกกับคำถาม “${asked}” คำตอบจะอยู่ที่ว่าประเด็นนี้มีเงื่อนไขจริงรองรับแค่ไหน`,
+        conditions: "ผลลัพธ์จะชัดขึ้นเมื่อข้อมูลครบ คนที่เกี่ยวข้องชัด และผู้ถามลงมือในส่วนที่ควบคุมได้จริง",
+        advice: questionContextAction(context),
+        caution: context.risk
+      };
+    }
+
+    function questionContextAction(context) {
+      return context && context.action ? context.action : "ตรวจข้อมูลจริงและค่อยตัดสินใจจากสิ่งที่รับผิดชอบได้";
+    }
+
     function getContextualReading(card, context, tone, question) {
       const asked = question.trim();
-      if (!asked) {
-        return `เมื่อไม่ได้ระบุคำถาม ไพ่ ${card.name} จึงอ่านเป็นพลังโดยรวม: ${card.result} แกนของไพ่คือ ${card.meaning} ให้ใช้เป็นกระจกสะท้อนใจและสถานการณ์ปัจจุบัน`;
-      }
-      const contextLabel = getQuestionContextLabel(context, asked);
-      const direct = `สำหรับคำถาม “${asked}” ไพ่ ${card.name} ชี้ว่าแกนของคำตอบอยู่ที่ ${card.meaning} และผลจากไพ่คือ ${card.result}`;
-      if (context.key === "work") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องงาน ให้ดูว่างานหรือทางเลือกที่ถามมีหน้าที่ คนร่วมงาน เงื่อนไข และโอกาสเติบโตสอดคล้องกับเป้าหมายจริงหรือไม่ คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      if (context.key === "money") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องการเงิน ให้ดูตัวเลขจริง ภาระที่ต้องจ่าย สัญญา และความเสี่ยงก่อนตัดสินใจ คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      if (context.key === "love") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องความรัก ให้ดูความชัดเจน การสื่อสาร และการกระทำจริง ไม่ใช่ดูเพียงความรู้สึกฝ่ายเดียว คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      if (context.key === "health") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องสุขภาพ ให้ใช้เป็นสัญญาณทบทวนการดูแลตัวเอง ไม่ใช่คำวินิจฉัย คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      if (context.key === "study") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องเรียนหรือสอบ ให้ดูวินัย ความพร้อม ข้อมูลที่ยังขาด และเวลาที่เหลือ คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      if (context.key === "family") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องบ้านหรือครอบครัว ให้ดูฐานชีวิต ความรับผิดชอบร่วม และบทบาทของคนที่เกี่ยวข้อง คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      if (context.key === "decision") return `${direct} เมื่อนำกลับมาอ่านเป็นคำถามเรื่องทางเลือก ให้ดูว่าแต่ละทางมีเงื่อนไขจริงพร้อมแค่ไหน และผลที่ตามมารับได้หรือไม่ แนวอ่านรอบนี้คือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      return `${direct} เมื่อนำกลับมาอ่านเป็น${contextLabel} ให้เทียบความหมายไพ่กับรายละเอียดจริงของคำถาม โดยเฉพาะ ${context.focus} คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      const directReading = buildDirectQuestionReading(card, context, tone, question);
+      if (!asked) return directReading.reason;
+      return `${directReading.answer} ระดับโอกาส: ${directReading.probability} ช่วงเวลาโดยประมาณ: ${directReading.timeframe} เหตุผลจากไพ่คือ ${directReading.reason}`;
     }
     function renderPrivacySummary(fullName, birthText) {
       const name = fullName ? `ผู้ถาม: ${escapeHtml(fullName)}` : "ยังไม่ได้ระบุชื่อผู้ถาม";
@@ -1832,24 +1988,22 @@
       const asked = question.trim();
       const keyMessage = detail ? detail.summary : card.result;
       const tone = getToneProfile(card);
-      const contextLabel = getQuestionContextLabel(questionContext, question);
-      const contextualReading = getContextualReading(card, questionContext, tone, question);
-      const decisionText = asked
-        ? `คำถามนี้ถูกอ่านในบริบท ${escapeHtml(contextLabel)} ไพ่ ${escapeHtml(card.name)} จึงต้องแปลกลับไปที่ ${escapeHtml(questionContext.focus)} โดยตรง หากสิ่งที่ถามกำลังตรงกับแกนของไพ่ โอกาสหรือข้อควรระวังจะชัดขึ้นทันที แนวอ่านรอบนี้คือ ${escapeHtml(tone.decision)}`
-        : `เมื่อไม่ได้ระบุคำถาม ระบบจึงอ่านไพ่ ${escapeHtml(card.name)} เป็นภาพรวมของพลังและจังหวะ ไม่ได้ผูกกับเรื่องงาน เงิน หรือความรักโดยเฉพาะ`;
+      const directReading = buildDirectQuestionReading(card, questionContext, tone, question);
       const astroAdvice = profile && !profile.error
-        ? `เมื่อเทียบกับพื้นดวงวัน${profile.weekday} พลัง ${profile.planet} ช่วยบอกวิธีรับมือว่า ${escapeHtml(profile.advice)} เมื่อนำมารวมกับไพ่ใบนี้ ควรใช้ทั้งเหตุผลจากสถานการณ์จริงและจังหวะในใจของผู้ถามประกอบกัน`
+        ? `เมื่อเทียบกับพื้นดวงวัน${profile.weekday} พลัง ${profile.planet} ช่วยบอกวิธีรับมือว่า ${escapeHtml(profile.advice)} ใช้เป็นแรงประกอบการตัดสินใจ แต่ให้ดูเงื่อนไขจริงของคำถามเป็นหลัก`
         : "หากต้องการให้คำอ่านเฉพาะตัวขึ้น สามารถใส่วันเดือนปีเกิดเพื่อให้ระบบอ่านประกอบวันเกิด ดาวประจำวัน และกำลังวัน";
       const finalText = asked
-        ? `ถ้าตอบคำถาม “${escapeHtml(asked)}” แบบสั้นที่สุด ไพ่ ${escapeHtml(card.name)} บอกว่าให้ยึดแกนเรื่อง ${escapeHtml(card.meaning)} เป็นหลัก แล้วตัดสินใจตามเงื่อนไขจริง: ${escapeHtml(tone.decision)}`
-        : `เพราะไม่ได้ระบุคำถาม คำตอบนี้จึงเป็นการอ่านความหมายไพ่โดยรวมจากไพ่ ${escapeHtml(card.name)} และควรใช้เพื่อทบทวนตัวเองมากกว่าฟันธงเรื่องใดเรื่องหนึ่ง`;
+        ? `${directReading.answer} สรุปจากไพ่ ${card.name} คือให้ดูเรื่อง ${card.meaning} เป็นตัวชี้ว่าคำถามนี้พร้อมเดินหน้าหรือยัง`
+        : `เพราะไม่ได้ระบุคำถาม คำตอบนี้จึงเป็นการอ่านความหมายไพ่โดยรวมจากไพ่ ${card.name} และควรใช้เพื่อทบทวนตัวเองมากกว่าฟันธงเรื่องใดเรื่องหนึ่ง`;
 
       return `
-        <div class="summary-block"><h3>คำตอบหลักจากไพ่</h3><p><strong>ไพ่ ${escapeHtml(card.name)}</strong> มีแกนความหมายคือ ${escapeHtml(card.meaning)}</p><p>${escapeHtml(keyMessage)}</p></div>
-        <div class="summary-block"><h3>คำตอบที่ผูกกับคำถาม</h3><p>${escapeHtml(contextualReading)}</p></div>
-        <div class="summary-block"><h3>วิเคราะห์คำถาม</h3><p>${decisionText}</p><p>${astroAdvice}</p></div>
-        <div class="summary-block"><h3>ข้อควรระวังที่เกี่ยวกับคำถาม</h3><ul><li>${escapeHtml(tone.caution)}</li><li>${escapeHtml(questionContext.risk)}</li><li>อย่าใช้คำทำนายแทนข้อมูลจริง เอกสาร สัญญา หรือคำปรึกษาจากผู้รู้ในเรื่องสำคัญ</li><li>หากใจยังร้อนหรือกังวลมาก ควรรอให้ใจนิ่งก่อนค่อยตัดสินใจขั้นสุดท้าย</li></ul></div>
-        <div class="summary-block"><h3>สรุปคำตอบ</h3><p>${finalText}</p></div>`;
+        <div class="summary-block"><h3>คำตอบหลัก</h3><p><strong>${escapeHtml(directReading.answer)}</strong></p></div>
+        <div class="summary-block"><h3>ระดับโอกาสและช่วงเวลา</h3><p><strong>ระดับโอกาส:</strong> ${escapeHtml(directReading.probability)}</p><p><strong>ช่วงเวลาโดยประมาณ:</strong> ${escapeHtml(directReading.timeframe)}</p></div>
+        <div class="summary-block"><h3>เหตุผลจากไพ่</h3><p>${escapeHtml(directReading.reason)}</p><p><strong>ภาพรวมไพ่:</strong> ${escapeHtml(keyMessage)}</p></div>
+        <div class="summary-block"><h3>เงื่อนไขที่ทำให้สำเร็จ</h3><p>${escapeHtml(directReading.conditions)}</p></div>
+        <div class="summary-block"><h3>คำแนะนำที่ควรทำต่อ</h3><p>${escapeHtml(directReading.advice)}</p><p>${astroAdvice}</p></div>
+        <div class="summary-block"><h3>จุดที่ต้องระวัง</h3><p>${escapeHtml(directReading.caution)}</p><ul><li>อย่าใช้คำทำนายแทนข้อมูลจริง เอกสาร สัญญา หรือคำปรึกษาจากผู้รู้ในเรื่องสำคัญ</li><li>หากใจยังร้อนหรือกังวลมาก ควรรอให้ใจนิ่งก่อนค่อยตัดสินใจขั้นสุดท้าย</li></ul></div>
+        <div class="summary-block"><h3>สรุปคำตอบ</h3><p>${escapeHtml(finalText)}</p></div>`;
     }
     function renderThreeCardSummary(question, profile, questionContext) {
       const asked = question.trim();
