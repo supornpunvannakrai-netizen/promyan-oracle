@@ -1130,22 +1130,22 @@
     const spreadLabels = ["อดีต", "ปัจจุบัน", "แนวโน้ม"];
     const toneProfiles = {
       supportive: {
-        label: "น้ำหนักส่งเสริม",
-        title: "น้ำหนักคำทำนาย: ส่งเสริม",
+        label: "ส่งเสริม",
+        title: "จังหวะส่งเสริม",
         summary: "พลังของไพ่เอนไปทางเปิดโอกาส สนับสนุน หรือช่วยให้เรื่องที่ถามเดินหน้าได้ง่ายขึ้น แต่ยังต้องลงมืออย่างมีสติ",
         decision: "เดินหน้าได้ หากเงื่อนไขจริงพร้อมและคุณรับผิดชอบผลลัพธ์ได้",
         caution: "ระวังความมั่นใจเกินไปหรือมองข้ามรายละเอียดเล็ก ๆ ที่อาจกลายเป็นปัญหา"
       },
       mixed: {
-        label: "น้ำหนักกลาง",
-        title: "น้ำหนักคำทำนาย: กลาง",
+        label: "ต้องชั่งใจ",
+        title: "จังหวะต้องชั่งใจ",
         summary: "พลังของไพ่ยังไม่ฟันธงว่าดีหรือเสีย มีทั้งโอกาสและเงื่อนไขที่ต้องจัดการก่อน คำตอบขึ้นกับวิธีวางตัวของผู้ถามมาก",
         decision: "ยังควรชั่งน้ำหนัก เก็บข้อมูล และดูจังหวะก่อนตัดสินใจขั้นสุดท้าย",
         caution: "อย่าตัดสินจากความหวังหรือความกลัวเพียงด้านเดียว เพราะข้อมูลอาจยังไม่ครบ"
       },
       caution: {
-        label: "น้ำหนักเตือน",
-        title: "น้ำหนักคำทำนาย: เตือน",
+        label: "เตือน",
+        title: "จังหวะต้องระวัง",
         summary: "พลังของไพ่เน้นข้อควรระวัง อุปสรรค ความล่าช้า หรือผลข้างเคียงที่ควรมองให้ชัดก่อนเดินต่อ ไม่ได้แปลว่าเลวร้ายเสมอไป แต่ไม่ควรประมาท",
         decision: "ชะลอ ตรวจเงื่อนไข และแก้จุดเสี่ยงก่อน หากยังไม่พร้อมไม่ควรฝืนเดินหน้า",
         caution: "ระวังการตัดสินใจเร็วเกินไป คำพูดแรง ความเข้าใจผิด เอกสารผิดพลาด หรือการรับภาระเกินตัว"
@@ -1603,7 +1603,6 @@
         <div class="reading-detail">
           <section><h4>ความหมายหลักของไพ่ “${name}”</h4><p>${meaning}</p></section>
           <section><h4>ภาพรวมของคำตอบ</h4><p>${result} ไพ่ใบนี้ให้มองเหตุการณ์ตามความจริงและใช้ความหมายหลักของไพ่เป็นแกนในการตัดสินใจ ไม่ควรรีบสรุปจากความกลัวหรือความคาดหวังเพียงด้านเดียว</p></section>
-          <section><h4>${escapeHtml(tone.title)}</h4><p>${escapeHtml(tone.summary)}</p><p><strong>แนวตัดสินใจ:</strong> ${escapeHtml(tone.decision)}</p></section>
           <section><h4>ด้านบวก</h4>${listItems([
             `มีจุดเด่นเกี่ยวกับ ${card.meaning} และอาจเปิดโอกาสให้สถานการณ์ขยับไปในทางที่เหมาะสม`,
             "ถ้าตั้งสติและเลือกทำในสิ่งที่ถูกต้อง ไพ่ใบนี้ช่วยชี้ทางให้เห็นจังหวะที่ควรเดินต่อ",
@@ -1629,7 +1628,6 @@
       return `
         <div class="reading-detail">
           <section><h4>${escapeHtml(detail.title)}</h4><p>${escapeHtml(detail.core)}</p></section>
-          <section><h4>${escapeHtml(getToneProfile(card).title)}</h4><p>${escapeHtml(getToneProfile(card).summary)}</p><p><strong>แนวตัดสินใจ:</strong> ${escapeHtml(getToneProfile(card).decision)}</p></section>
           <section><h4>ด้านบวก</h4>${listItems(detail.positive)}</section>
           <section><h4>ด้านลบ / ข้อควรระวัง</h4>${listItems(detail.caution)}</section>
           <section><h4>ถ้าถามเรื่องความรัก</h4><p>${escapeHtml(detail.love)}</p></section>
@@ -1814,25 +1812,35 @@
         };
     }
 
+    function getQuestionContextLabel(context, question) {
+      if (!question.trim()) return "ภาพรวมทั่วไป";
+      return context.key === "specific" ? "คำถามที่คุณถาม" : context.label;
+    }
+
     function renderQuestionContextBlock(context, question) {
-      if (!question.trim()) {
+      const asked = question.trim();
+      if (!asked) {
         return `<div class="summary-block"><h3>บริบทคำถาม</h3><p>ยังไม่ได้ระบุคำถาม ระบบจึงอ่านเป็นความหมายของไพ่และพลังภาพรวมเท่านั้น หากต้องการคำตอบที่ตรงเรื่อง เช่น งาน เงิน หรือความรัก ควรพิมพ์คำถามให้ชัดก่อนเปิดไพ่</p></div>`;
       }
-      return `<div class="summary-block"><h3>บริบทคำถาม: ${escapeHtml(context.label)}</h3><p>คำทำนายนี้จะอ่านไพ่โดยผูกกลับเข้ากับ ${escapeHtml(context.focus)} ไม่ใช่อ่านเฉพาะความหมายไพ่แบบลอย ๆ</p><p><strong>แนวทางอ่าน:</strong> ${escapeHtml(context.action)}</p></div>`;
+      const contextLabel = getQuestionContextLabel(context, asked);
+      return `<div class="summary-block"><h3>บริบทคำถาม: ${escapeHtml(contextLabel)}</h3><p><strong>คำถามที่ถามคือ</strong> “${escapeHtml(asked)}”</p><p>คำทำนายนี้จะใช้คำถามเป็นแกน แล้วนำไพ่ที่เปิดได้กลับมาตอบประเด็นนั้นโดยตรง ไม่อ่านไพ่แบบลอย ๆ แยกจากเรื่องที่ถาม</p><p><strong>แนวทางอ่าน:</strong> ${escapeHtml(context.action)}</p></div>`;
     }
 
     function getContextualReading(card, context, tone, question) {
-      if (!question.trim()) {
-        return `เมื่อไม่ได้ระบุคำถาม ไพ่ ${card.name} จึงอ่านเป็นพลังโดยรวม: ${card.result} แกนของไพ่คือ ${card.meaning} และน้ำหนักรอบนี้คือ ${tone.label}`;
+      const asked = question.trim();
+      if (!asked) {
+        return `เมื่อไม่ได้ระบุคำถาม ไพ่ ${card.name} จึงอ่านเป็นพลังโดยรวม: ${card.result} แกนของไพ่คือ ${card.meaning} ให้ใช้เป็นกระจกสะท้อนใจและสถานการณ์ปัจจุบัน`;
       }
-      const opening = `สำหรับ${context.label} ไพ่ ${card.name} ไม่ได้ตอบแค่ความหมายทั่วไป แต่ชี้ว่าแกนเรื่องนี้เกี่ยวกับ ${card.meaning}`;
-      if (context.key === "work") return `${opening} ในเชิงงานให้ดูว่าหน้าที่ คนร่วมงาน หรือโอกาสใหม่สอดคล้องกับเป้าหมายจริงหรือไม่ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      if (context.key === "money") return `${opening} ในเชิงการเงินให้ดูตัวเลข เงื่อนไข และความเสี่ยงจริงก่อน ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      if (context.key === "love") return `${opening} ในเชิงความรักให้ดูความชัดเจน การสื่อสาร และการกระทำจริงของอีกฝ่าย ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      if (context.key === "health") return `${opening} ในเชิงสุขภาพให้ใช้เป็นสัญญาณทบทวนการดูแลตัวเอง ไม่ใช่คำวินิจฉัย ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      if (context.key === "study") return `${opening} ในเชิงการเรียนให้ดูวินัย ความพร้อม และข้อมูลที่ต้องเติม ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      if (context.key === "family") return `${opening} ในเชิงบ้านและครอบครัวให้ดูฐานชีวิต ความรับผิดชอบ และคนที่เกี่ยวข้อง ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
-      return `${opening} ให้เทียบไพ่กับเงื่อนไขจริงของคำถาม ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      const contextLabel = getQuestionContextLabel(context, asked);
+      const direct = `สำหรับคำถาม “${asked}” ไพ่ ${card.name} ชี้ว่าแกนของคำตอบอยู่ที่ ${card.meaning} และผลจากไพ่คือ ${card.result}`;
+      if (context.key === "work") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องงาน ให้ดูว่างานหรือทางเลือกที่ถามมีหน้าที่ คนร่วมงาน เงื่อนไข และโอกาสเติบโตสอดคล้องกับเป้าหมายจริงหรือไม่ คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      if (context.key === "money") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องการเงิน ให้ดูตัวเลขจริง ภาระที่ต้องจ่าย สัญญา และความเสี่ยงก่อนตัดสินใจ คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      if (context.key === "love") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องความรัก ให้ดูความชัดเจน การสื่อสาร และการกระทำจริง ไม่ใช่ดูเพียงความรู้สึกฝ่ายเดียว คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      if (context.key === "health") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องสุขภาพ ให้ใช้เป็นสัญญาณทบทวนการดูแลตัวเอง ไม่ใช่คำวินิจฉัย คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      if (context.key === "study") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องเรียนหรือสอบ ให้ดูวินัย ความพร้อม ข้อมูลที่ยังขาด และเวลาที่เหลือ คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      if (context.key === "family") return `${direct} เมื่อนำกลับมาอ่านเป็นเรื่องบ้านหรือครอบครัว ให้ดูฐานชีวิต ความรับผิดชอบร่วม และบทบาทของคนที่เกี่ยวข้อง คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      if (context.key === "decision") return `${direct} เมื่อนำกลับมาอ่านเป็นคำถามเรื่องการตัดสินใจ ไพ่ไม่ได้สั่งให้ทำหรือไม่ทำทันที แต่ให้ดูว่าเงื่อนไขจริงพร้อมพอหรือยัง คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
+      return `${direct} เมื่อนำกลับมาอ่านเป็น${contextLabel} ให้เทียบความหมายไพ่กับรายละเอียดจริงของคำถาม โดยเฉพาะ ${context.focus} คำตอบเชิงตัดสินใจคือ ${tone.decision} จุดที่ต้องระวังคือ ${context.risk}`;
     }
     function renderPrivacySummary(fullName, birthText) {
       const name = fullName ? `ผู้ถาม: ${escapeHtml(fullName)}` : "ยังไม่ได้ระบุชื่อผู้ถาม";
@@ -1841,51 +1849,64 @@
     }
 
     function renderOneCardSummary(card, detail, question, profile, questionContext) {
+      const asked = question.trim();
       const keyMessage = detail ? detail.summary : card.result;
       const decisionMode = isDecisionQuestion(question);
       const tone = getToneProfile(card);
+      const contextLabel = getQuestionContextLabel(questionContext, question);
       const contextualReading = getContextualReading(card, questionContext, tone, question);
       const decisionText = decisionMode
-        ? `เพราะคำถามมีลักษณะถามว่า “ควรทำหรือไม่” ไพ่ ${escapeHtml(card.name)} จึงตอบผ่านบริบท ${escapeHtml(questionContext.label)} และน้ำหนัก ${escapeHtml(tone.label)}: ${escapeHtml(tone.decision)} หากยังมีข้อมูลไม่ครบ ให้ถือคำตอบนี้เป็นสัญญาณให้ตรวจเงื่อนไขก่อน ไม่ใช่คำสั่งให้ทำทันที`
-        : question.trim()
-          ? `คำถามนี้ถูกอ่านในบริบท ${escapeHtml(questionContext.label)} ไพ่ ${escapeHtml(card.name)} จึงต้องแปลกลับไปที่ ${escapeHtml(questionContext.focus)} ไม่ใช่อ่านเป็นความหมายไพ่ทั่วไปเท่านั้น`
+        ? `คำถามนี้มีลักษณะถามว่า “ควรทำหรือไม่” ไพ่ ${escapeHtml(card.name)} จึงไม่ได้ตอบแบบใช่หรือไม่ใช่ลอย ๆ แต่ให้ดูว่า ${escapeHtml(questionContext.focus)} พร้อมพอหรือยัง คำตอบเชิงตัดสินใจคือ ${escapeHtml(tone.decision)} หากข้อมูลจริงยังไม่ครบ ให้ถือคำตอบนี้เป็นสัญญาณให้ตรวจเงื่อนไขก่อน ไม่ใช่คำสั่งให้ทำทันที`
+        : asked
+          ? `คำถามนี้ถูกอ่านในบริบท ${escapeHtml(contextLabel)} ไพ่ ${escapeHtml(card.name)} จึงต้องแปลกลับไปที่ ${escapeHtml(questionContext.focus)} โดยตรง หากสิ่งที่ถามกำลังตรงกับแกนของไพ่ โอกาสหรือข้อควรระวังจะชัดขึ้นทันที`
           : `เมื่อไม่ได้ระบุคำถาม ระบบจึงอ่านไพ่ ${escapeHtml(card.name)} เป็นภาพรวมของพลังและจังหวะ ไม่ได้ผูกกับเรื่องงาน เงิน หรือความรักโดยเฉพาะ`;
       const astroAdvice = profile && !profile.error
-        ? `เมื่อเทียบกับพื้นดวงวัน${profile.weekday} พลัง ${profile.planet} ทำให้คำตอบนี้ควรใช้วิธี ${escapeHtml(profile.advice)} แต่ยังต้องให้ความสำคัญกับบริบทคำถามและน้ำหนักคำทำนายรอบนี้: ${escapeHtml(tone.summary)}`
+        ? `เมื่อเทียบกับพื้นดวงวัน${profile.weekday} พลัง ${profile.planet} ช่วยบอกวิธีรับมือว่า ${escapeHtml(profile.advice)} เมื่อนำมารวมกับไพ่ใบนี้ ควรใช้ทั้งเหตุผลจากสถานการณ์จริงและจังหวะในใจของผู้ถามประกอบกัน`
         : "หากต้องการให้คำอ่านเฉพาะตัวขึ้น สามารถใส่วันเดือนปีเกิดเพื่อให้ระบบอ่านประกอบวันเกิด ดาวประจำวัน และกำลังวัน";
+      const finalText = asked
+        ? `ถ้าตอบคำถาม “${escapeHtml(asked)}” แบบสั้นที่สุด ไพ่ ${escapeHtml(card.name)} บอกว่าให้ยึดแกนเรื่อง ${escapeHtml(card.meaning)} เป็นหลัก แล้วตัดสินใจตามเงื่อนไขจริง: ${escapeHtml(tone.decision)}`
+        : `เพราะไม่ได้ระบุคำถาม คำตอบนี้จึงเป็นการอ่านความหมายไพ่โดยรวมจากไพ่ ${escapeHtml(card.name)} และควรใช้เพื่อทบทวนตัวเองมากกว่าฟันธงเรื่องใดเรื่องหนึ่ง`;
 
       return `
         <div class="summary-block"><h3>คำตอบหลักจากไพ่</h3><p><strong>ไพ่ ${escapeHtml(card.name)}</strong> มีแกนความหมายคือ ${escapeHtml(card.meaning)}</p><p>${escapeHtml(keyMessage)}</p></div>
         <div class="summary-block"><h3>คำตอบที่ผูกกับคำถาม</h3><p>${escapeHtml(contextualReading)}</p></div>
-        <div class="summary-block"><h3>${escapeHtml(tone.title)}</h3><p>${escapeHtml(tone.summary)}</p><p><strong>แนวตัดสินใจ:</strong> ${escapeHtml(tone.decision)}</p></div>
         <div class="summary-block"><h3>วิเคราะห์คำถาม</h3><p>${decisionText}</p><p>${astroAdvice}</p></div>
-        <div class="summary-block"><h3>ข้อควรระวังและแนวทางปฏิบัติ</h3><ul><li>${escapeHtml(tone.caution)}</li><li>${escapeHtml(questionContext.risk)}</li><li>อย่าใช้คำทำนายแทนข้อมูลจริง เอกสาร สัญญา หรือคำปรึกษาจากผู้รู้ในเรื่องสำคัญ</li><li>หากใจยังร้อนหรือกังวลมาก ควรรอให้ใจนิ่งก่อนค่อยตัดสินใจขั้นสุดท้าย</li></ul></div>
-        <div class="summary-block"><h3>สรุปการตัดสินใจ</h3><p>${question.trim() ? `คำตอบนี้สอดคล้องกับ${escapeHtml(questionContext.label)}ในลักษณะให้ดูว่า ${escapeHtml(questionContext.focus)} อยู่ในสภาพพร้อมแค่ไหน` : "เพราะไม่ได้ระบุคำถาม คำตอบนี้จึงเป็นการอ่านความหมายไพ่โดยรวม"} ถ้าน้ำหนักออกเตือนให้ชะลอและแก้จุดเสี่ยงก่อน ถ้าออกกลางให้เก็บข้อมูลเพิ่ม ถ้าออกส่งเสริมจึงค่อยเดินหน้าพร้อมแผนสำรอง</p></div>`;
+        <div class="summary-block"><h3>ข้อควรระวังที่เกี่ยวกับคำถาม</h3><ul><li>${escapeHtml(tone.caution)}</li><li>${escapeHtml(questionContext.risk)}</li><li>อย่าใช้คำทำนายแทนข้อมูลจริง เอกสาร สัญญา หรือคำปรึกษาจากผู้รู้ในเรื่องสำคัญ</li><li>หากใจยังร้อนหรือกังวลมาก ควรรอให้ใจนิ่งก่อนค่อยตัดสินใจขั้นสุดท้าย</li></ul></div>
+        <div class="summary-block"><h3>สรุปที่ใช้ตัดสินใจ</h3><p>${finalText}</p></div>`;
     }
     function renderThreeCardSummary(question, profile, questionContext) {
+      const asked = question.trim();
+      const contextLabel = getQuestionContextLabel(questionContext, question);
       const parts = chosenCards.map((card, index) => {
         const tone = getToneProfile(card);
         const contextualReading = getContextualReading(card, questionContext, tone, question);
-        return `<p><strong>${escapeHtml(spreadLabels[index])}</strong> คือ ${escapeHtml(card.name)}: ${escapeHtml(card.result)}<br><strong>ผูกกับ${escapeHtml(questionContext.label)}:</strong> ${escapeHtml(contextualReading)}<br><strong>${escapeHtml(tone.label)}</strong>: ${escapeHtml(tone.summary)}</p>`;
+        return `<p><strong>${escapeHtml(spreadLabels[index])} - ${escapeHtml(card.name)}</strong><br>${escapeHtml(contextualReading)}</p>`;
       }).join("");
       const [past, present, future] = chosenCards;
       const cautionCount = chosenCards.filter((card) => card.drawTone === "caution").length;
       const supportiveCount = chosenCards.filter((card) => card.drawTone === "supportive").length;
       const overallTone = cautionCount >= 2 ? toneProfiles.caution : supportiveCount >= 2 ? toneProfiles.supportive : toneProfiles.mixed;
       const astroAdvice = profile && !profile.error
-        ? `เมื่อประกอบกับวัน${profile.weekday} ดาว ${profile.planet} และกำลังวัน ${profile.strength} แนวทางที่เหมาะคือ ${escapeHtml(profile.advice)} แต่ต้องถ่วงน้ำหนักกับบริบท ${escapeHtml(questionContext.label)} และภาพรวมไพ่รอบนี้: ${escapeHtml(overallTone.summary)}`
+        ? `เมื่อประกอบกับวัน${profile.weekday} ดาว ${profile.planet} และกำลังวัน ${profile.strength} แนวทางที่เหมาะคือ ${escapeHtml(profile.advice)} การอ่านส่วนนี้ใช้เป็นกรอบประกอบ ไม่ได้แทนเงื่อนไขจริงของคำถาม`
         : "หากระบุวันเกิด ระบบจะช่วยอ่านร่วมกับวันเกิด ดาวประจำวัน และกำลังวันให้เฉพาะตัวมากขึ้น";
-      const decisionText = isDecisionQuestion(question)
-        ? `สำหรับคำถามที่ถามว่าควรทำหรือไม่ ให้ดูสามใบเป็นลำดับเหตุผลในบริบท ${escapeHtml(questionContext.label)}: อดีตคือสิ่งที่พาคุณมาถึงจุดนี้ ปัจจุบันคือเงื่อนไขที่ต้องจัดการ และแนวโน้มคือผลที่ควรเตรียมรับ ภาพรวมครั้งนี้เป็น ${escapeHtml(overallTone.label)} จึงควรใช้แนวทางว่า ${escapeHtml(overallTone.decision)}`
-        : question.trim()
-          ? `สามใบนี้อ่านเป็นเส้นทางของ ${escapeHtml(questionContext.label)} โดยดูว่า ${escapeHtml(questionContext.focus)} กำลังเปลี่ยนจากอดีตมาปัจจุบันและแนวโน้มอย่างไร`
-          : `สามใบนี้อ่านเป็นภาพรวมของไพ่ เพราะยังไม่ได้ระบุคำถามเฉพาะ จึงไม่ผูกกับเรื่องงาน เงิน หรือความรักโดยตรง`;
+      const opening = asked
+        ? `คำถามที่ถามคือ “${escapeHtml(asked)}” สามใบนี้จึงอ่านเป็นลำดับเหตุผลของ${escapeHtml(contextLabel)} ไม่ใช่แยกอ่านทีละใบแบบลอย ๆ`
+        : `เมื่อไม่ได้ระบุคำถาม สามใบนี้จะอ่านเป็นภาพรวมทั่วไปของอดีต ปัจจุบัน และแนวโน้ม`;
+      const connection = asked
+        ? `อดีต <strong>${escapeHtml(past.name)}</strong> คือรากหรือเหตุเดิมที่ส่งผลต่อคำถามนี้ ปัจจุบัน <strong>${escapeHtml(present.name)}</strong> คือจุดที่ต้องจัดการตอนนี้ และแนวโน้ม <strong>${escapeHtml(future.name)}</strong> คือทิศทางที่ควรเตรียมรับ เมื่อนำมารวมกัน คำตอบควรมองผ่าน ${escapeHtml(questionContext.focus)} และไม่ควรมองแค่ไพ่ใบสุดท้ายใบเดียว`
+        : `อดีต <strong>${escapeHtml(past.name)}</strong> ปัจจุบัน <strong>${escapeHtml(present.name)}</strong> และแนวโน้ม <strong>${escapeHtml(future.name)}</strong> เป็นภาพรวมของจังหวะชีวิตช่วงนี้`;
+      const conclusion = asked
+        ? `ถ้าตอบคำถาม “${escapeHtml(asked)}” แบบรวม ไพ่ชุดนี้บอกให้ดูเงื่อนไขปัจจุบันเป็นหลัก โดยเฉพาะไพ่ ${escapeHtml(present.name)} เพราะเป็นจุดที่ผู้ถามจัดการได้มากที่สุด จากนั้นใช้ไพ่ ${escapeHtml(future.name)} เป็นสัญญาณว่าผลปลายทางควรเสริมหรือระวังเรื่องใด แนวตัดสินใจรอบนี้คือ ${escapeHtml(overallTone.decision)}`
+        : `เพราะยังไม่ได้ระบุคำถาม คำตอบรวมจึงเป็นการทบทวนภาพรวมจากไพ่ทั้งสามใบ ไม่ควรใช้ฟันธงเรื่องใดเรื่องหนึ่งโดยตรง`;
+      const cautionText = asked
+        ? `สำหรับคำถามนี้ จุดที่ควรระวังคือ ${escapeHtml(overallTone.caution)} และ ${escapeHtml(questionContext.risk)} ถ้าเรื่องเดิมยังไม่เปลี่ยน ควรรอ 7 วันหรือรอเหตุการณ์ใหม่ก่อนเปิดซ้ำ เพื่อไม่ให้คำตอบวนตามอารมณ์`
+        : `จุดที่ควรระวังคือ ${escapeHtml(overallTone.caution)} และไม่ควรตีความเกินกว่าคำถาม เพราะยังไม่ได้ระบุเรื่องที่ต้องการคำตอบเฉพาะ`;
       return `
-        <div class="summary-block"><h3>ภาพรวมสามใบตามบริบทคำถาม</h3>${parts}</div>
-        <div class="summary-block"><h3>${escapeHtml(overallTone.title)}</h3><p>${escapeHtml(overallTone.summary)}</p><p><strong>แนวตัดสินใจ:</strong> ${escapeHtml(overallTone.decision)}</p></div>
-        <div class="summary-block"><h3>การเชื่อมโยงของคำทำนาย</h3><p>จากอดีต <strong>${escapeHtml(past.name)}</strong> มาสู่ปัจจุบัน <strong>${escapeHtml(present.name)}</strong> แล้วไปยังแนวโน้ม <strong>${escapeHtml(future.name)}</strong> ภาพรวมบอกว่าเรื่องนี้มีทั้งรากเดิม เงื่อนไขปัจจุบัน และผลลัพธ์ที่ต้องเตรียมรับ ไม่ควรมองแค่ใบสุดท้ายใบเดียว</p><p>${decisionText}</p></div>
+        <div class="summary-block"><h3>ภาพรวมสามใบตามคำถาม</h3><p>${opening}</p>${parts}</div>
+        <div class="summary-block"><h3>การเชื่อมโยงกับคำถาม</h3><p>${connection}</p></div>
+        <div class="summary-block"><h3>ข้อสรุปที่ตอบคำถาม</h3><p>${conclusion}</p></div>
         <div class="summary-block"><h3>ประกอบดวงวันเกิด</h3><p>${astroAdvice}</p></div>
-        <div class="summary-block"><h3>คำแนะนำรวม</h3><ul><li>${escapeHtml(overallTone.caution)}</li><li>${escapeHtml(questionContext.risk)}</li><li>เริ่มจากแก้เงื่อนไขของไพ่ปัจจุบันก่อน เพราะเป็นจุดที่คุณควบคุมได้มากที่สุด</li><li>ใช้ไพ่แนวโน้มเป็นคำเตือนล่วงหน้า ว่าควรเสริมอะไรหรือหลีกเลี่ยงอะไร</li><li>ถ้าเรื่องเดิมยังไม่เปลี่ยน ควรรอ 7 วันหรือรอเหตุการณ์ใหม่ก่อนเปิดซ้ำ เพื่อไม่ให้คำตอบวนตามอารมณ์</li></ul></div>`;
+        <div class="summary-block"><h3>จุดที่ต้องระวัง</h3><p>${cautionText}</p></div>`;
     }
     function buildSummary() {
       const question = questionInput.value.trim();
